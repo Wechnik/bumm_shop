@@ -1,0 +1,49 @@
+.pts-neworder td, .pts-neworder {
+    background-color: #8bd695 !important
+}
+.pts-disabled td, .pts-disabled {
+    background-color: #f5baba !important
+}
+.pts-new_inquiry td, .pts-new_inquiry {
+    background-color: #8bd695 !important
+}
+.pts-col-sm-6 .pagination > li.active {
+    background-color: transparent;
+}
+h4, .h4{
+	margin-bottom: 21px !important;
+	font-size:18px !important;
+}
+.desktop-cart-wrapper.default-cart-wrapper{
+	    margin-left: 7px;
+}
+.pts-container{
+	max-width:1040px;
+}
+.one-column #pts-content{
+	    /* max-width: calc(100% - 200px); */
+		/* padding: 25px !important; */
+		/* background: rgba(255, 255, 255, 1); */
+}
+#pts-content{
+	width:100% !important
+}
+.site-wrapper > .pts-container > .pts-row {
+    /* background: rgba(255, 255, 255, 1); */
+    /* padding-top: 20px; */
+    /* padding-bottom: 20px; */
+}
+.pts-pull-left{
+	float:left !important;
+	    margin-right: auto !important;
+}
+
+.pts-pull-right{
+	float:right !important
+}
+
+/* @media(max-width:768px){ */
+	/* .site-wrapper > .pts-container > .pts-row{ */
+		/* display: block !important; */
+	/* } */
+/* } */

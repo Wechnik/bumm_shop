@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+    <code>affilateprogramm</code>
+    <name>AffilateProgramm</name>
+    <version>2.3.1</version>
+    <author>VladVlad/sales@hostkvr.ru</author>
+
+ <file path="admin/view/template/catalog/category_form.tpl">
+ <operation>
+ <search><![CDATA[
+       <div class="tab-pane" id="tab-data">
+  ]]></search>
+<add position="after"><![CDATA[
+<div class="form-group">
+                <label class="col-sm-2 control-label" for="input-top"><span data-toggle="tooltip" title="<?php echo $text_acentr; ?>"><?php echo $text_acentr; ?></span></label>
+                <div class="col-sm-10">
+                  <div class="checkbox">
+                    <label>
+                      <?php if ($acentr) { ?>
+                      <input type="checkbox" name="acentr" value="1" checked="checked" id="input-top" />
+                      <?php } else { ?>
+                      <input type="checkbox" name="acentr" value="1" id="input-top" />
+                      <?php } ?>
+                      &nbsp; </label>
+                  </div>
+                </div>
+              </div>
+  ]]></add>
+</operation>
+</file>
+ <file path="admin/language/ru-ru/catalog/category.php">
+ <operation>
+ <search><![CDATA[
+<?
+  ]]></search>
+<add position="after"><![CDATA[
+$_['text_acentr']    = 'Требуется установка: ';
+  ]]></add>
+</operation>
+</file>
+
+<file path="admin/model/catalog/category.php">
+ <operation>
+ <search><![CDATA[, date_added = NOW()]]></search>
+<add position="replace" index="0"><![CDATA[, date_added = NOW(), acentr = '" . (int)$data['acentr'] . "']]></add>
+</operation>
+<operation>
+ <search><![CDATA[, date_modified = NOW()]]></search>
+<add position="replace" index="1"><![CDATA[, date_modified = NOW(), acentr = '" . (int)$data['acentr'] . "' ]]></add>
+</operation>
+</file>
+
+ <file path="admin/controller/catalog/category.php">
+ <operation>
+ <search><![CDATA[
+   $data['text_disabled'] = $this->language->get('text_disabled');
+  ]]></search>
+<add position="after"><![CDATA[
+$data['text_acentr'] = $this->language->get('text_acentr');
+  ]]></add>
+</operation>
+<operation>
+ <search><![CDATA[
+  if (isset($this->request->post['top'])) {
+  ]]></search>
+<add position="before"><![CDATA[
+if (isset($this->request->post['acentr'])) {
+            $data['acentr'] = $this->request->post['acentr'];
+        } elseif (!empty($category_info)) {
+            $data['acentr'] = $category_info['acentr'];
+        } else {
+            $data['acentr'] = 0;
+        }
+  ]]></add>
+</operation>
+</file>
+
+
+<file path="catalog/controller/product/product.php">
+<operation>
+<search><![CDATA[
+    $product_info = $this->model_catalog_product->getProduct($product_id);
+    ]]></search>
+<add position="after"><![CDATA[
+unset($this->session->data['product_id']);
+  $data_query = array();
+$data['partner'] = '';
+    $prod_cats_id = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . $product_id . "'")->rows;
+
+        foreach ($prod_cats_id as $prod_cat_id) {
+        $aff_centrs_id = $this->db->query("SELECT * FROM " . DB_PREFIX . "affiliate_centr")->rows;  // print_r($aff_centrs_id); exit;
+         foreach ($aff_centrs_id as $aff_centr_id) {
+          if (in_array($prod_cat_id['category_id'], explode( ',', $aff_centr_id['category']))) {
+               $data['partner'] = '1';
+               $data_query[]=array('centr_id' => $aff_centr_id['centr_id']);
+         }
+        }
+        }
+       $this->load->model('affiliate/affiliate');
+        if (empty($this->session->data['shipping_address']['city'])) $data['city'] = 'Москва'; else $data['city'] = $this->session->data['shipping_address']['city'];
+        $data['affiliate_centr'] = $this->model_affiliate_affiliate->getMaps($data_query,$data['city']);
+
+            ]]></add>
+ </operation>
+ </file>
+
+ <file path="catalog/view/theme/*/template/product/product.tpl">
+ <operation>
+ <search><![CDATA[
+       <?php echo $header; ?>
+  ]]></search>
+<add position="after"><![CDATA[
+<link rel="stylesheet" href="catalog/view/theme/default/stylesheet/hystmodal.min.css">
+<script src="catalog/view/javascript/hystmodal.min.js"></script>
+  ]]></add>
+</operation>
+ <operation>
+ <search><![CDATA[
+   <button type="button" id="button-cart" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary btn-lg btn-block"><?php echo $button_cart; ?></button>
+  ]]></search>
+<add position="after"><![CDATA[
+ <? if ($partner) { ?>
+<a href="#" type="button" class="btn btn-primary btn-lg btn-block" data-hystmodal="#myModal">Где можно установить</a>
+   <? } ?>
+  ]]></add>
+</operation>
+ <operation>
+ <search><![CDATA[
+    <?php echo $footer; ?>
+  ]]></search>
+<add position="before"><![CDATA[
+<div class="hystmodal" id="myModal" aria-hidden="true">
+    <div class="hystmodal__wrap">
+        <div class="hystmodal__window" role="dialog" aria-modal="true">
+            <button data-hystclose class="hystmodal__close">Закрыть</button>
+ <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=29ff2f3b-0073-4444-bf2d-408ca3f56093" type="text/javascript"></script>
+   <script>
+ymaps.ready(function () {
+    mapHandler([55.76, 37.64], mapsArray);
+    myMap.container.fitToViewport();
+
+    partners = mapsArray;
+});
+ </script>
+          <script>
+            var mapsArray = [
+ <?php if (empty($affiliate_centr)) { ?>
+          {
+            geocode: '<?php echo $city; ?>',
+            iconCaption: 'Нет установочных центров.'
+          }
+ <?php } else { ?>
+   <?php foreach ($affiliate_centr as $affiliate) { ?>
+              {
+                geocode: '<?php echo $affiliate["geocode"]; ?>',
+                header: '<?php echo $affiliate["header"]; ?>',
+                body: '<?php echo $affiliate["body"]; ?>',
+                footer: '<?php echo $affiliate["footer"]; ?>',
+                iconCaption: '<?php echo $affiliate["header"]; ?>'
+              },
+           <?php } ?>
+         <?php } ?>
+            ];
+          </script>
+          <script src="catalog/view/javascript/reverse_geocode.js" type="text/javascript"></script>
+          <style type="text/css">
+              html, body, #map {
+                  width: 100%;
+                  height: 100%;
+                  margin: 0;
+                  padding: 0;
+              }
+              #map {
+                min-height: 500px;
+              }
+          </style>
+
+
+          <div id="map">
+          </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript"><!--
+const myModal = new HystModal({
+    linkAttributeName: "data-hystmodal",
+    // настройки (не обязательно), см. API
+    beforeOpen: function(modal){
+      //  setTimeout(() => {
+      //      myMap.container.fitToViewport();
+      //  }, 500);
+    },
+});
+//--></script>
+  ]]></add>
+</operation>
+ </file>
+<!-- ~~~~~~~~~~~~~~~~ КОРЗИНА ~~~~~~~~~~~ -->
+<file path="catalog/controller/checkout/checkout.php">
+        <operation>
+        <search>
+            <![CDATA[
+                public function index() {
+            ]]>
+        </search>
+        <add position="after">
+            <![CDATA[
+                $this->response->redirect($this->url->link('checkout/cart'));
+            ]]>
+        </add>
+        </operation>
+    </file>
+
+
+    <file path="admin/controller/common/column_left.php">
+        <operation>
+            <search>
+                <![CDATA[
+                    if ($this->user->hasPermission('access', 'extension/modification')) {
+                ]]>
+            </search>
+            <add position="before">
+                <![CDATA[
+                    if ($this->user->hasPermission('access', 'extension/module/custom')) {
+                        $extension[] = array(
+                            'name'	   => $this->language->get('text_module_custom'),
+                            'href'     => $this->url->link('extension/module/custom', 'token=' . $this->session->data['token'], true),
+                            'children' => array()
+                        );
+                    }
+                ]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="admin/language/ru-ru/common/column_left.php">
+        <operation>
+            <search>
+                <![CDATA[
+                    $_['text_modification']
+                ]]>
+            </search>
+            <add position="before">
+                <![CDATA[
+                    $_['text_module_custom'] = 'Оформление заказа';
+                ]]>
+            </add>
+        </operation>
+    </file>
+  <file path="system/library/cart/cart.php">
+<operation>
+<search><![CDATA[
+ $cart_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
+    ]]></search>
+<add position="replace"><![CDATA[
+$sql = "SELECT * FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "'";
+        if (!empty($this->session->data['product_id'])) {
+                $sql .= " AND product_id = '".(int)$this->session->data['product_id']."'";
+        }
+    $cart_query = $this->db->query($sql);
+            ]]></add>
+ </operation>
+ <operation>
+<search><![CDATA[
+ 	$this->db->query("DELETE FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
+    ]]></search>
+<add position="replace"><![CDATA[
+$this->db->query("DELETE FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "' AND product_id = '".(int)$this->session->data['product_id']."'");
+           ]]></add>
+ </operation>
+</file>
+
+ <file path="catalog/controller/checkout/cart.php">
+<operation>
+<search><![CDATA[
+    public function index() {
+    ]]></search>
+<add position="after"><![CDATA[
+unset($this->session->data['product_id']);
+unset($this->session->data['shipping_address']);
+            ]]></add>
+ </operation>
+ <operation>
+<search><![CDATA[
+ $data['products'][] = array(
+    ]]></search>
+<add position="after"><![CDATA[
+'product_id'=> $product['product_id'],
+            ]]></add>
+ </operation>
+ <operation>
+<search><![CDATA[
+ $data['checkout'] = $this->url->link('checkout/checkout', '', true);
+    ]]></search>
+<add position="replace"><![CDATA[
+$data['checkout'] = $this->url->link('checkout/custom', '', true);
+            ]]></add>
+ </operation>
+ </file>
+<file path="catalog/view/theme/*/template/checkout/cart.tpl">
+<operation>
+<search><![CDATA[
+  <td class="text-right"><?php echo $product['total']; ?></td>
+    ]]></search>
+<add position="after"><![CDATA[
+ </form>
+       <form action="<?php echo $checkout; ?>" method="post" enctype="multipart/form-data">
+ <td class="text-right"><button type="submit" class="btn btn-primary"><?php echo $button_checkout; ?></button></td>
+   <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>"/>
+        </form>
+            ]]></add>
+ </operation>
+ <operation>
+<search><![CDATA[
+ <div class="pull-right"><a href="<?php echo $checkout; ?>" class="btn btn-primary"><?php echo $button_checkout; ?></a></div>
+    ]]></search>
+<add position="replace"><![CDATA[
+ <!--  <div class="pull-right"><a href="<?php echo $checkout; ?>" class="btn btn-primary"><?php echo $button_checkout; ?></a></div> //-->
+            ]]></add>
+ </operation>
+ </file>
+<!-- ~~~~~~~~~~~~~~~~Упр. заказ ~~~~~~~~~~~ -->
+ <file path="catalog/controller/checkout/custom.php">
+<operation>
+<search><![CDATA[
+    public function index() {
+    ]]></search>
+<add position="after"><![CDATA[
+if (!empty($this->request->post['product_id']) and empty($this->session->data['product_id'])) {
+$this->session->data['product_id']=$this->request->post['product_id'];
+}
+ if (empty($this->session->data['product_id'])) {
+         $this->response->redirect($this->url->link('checkout/cart', '', true));
+      }
+            ]]></add>
+ </operation>
+ </file>
+
+
+ <file path="catalog/view/theme/default/template/checkout/custom.tpl">
+<operation>
+<search><![CDATA[
+  <?php echo $header; ?>
+    ]]></search>
+<add position="after"><![CDATA[
+  <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=29ff2f3b-0073-4444-bf2d-408ca3f56093" type="text/javascript"></script>
+]]></add>
+ </operation>
+ </file>
+ <file path="catalog/view/theme/default/template/extension/module/custom/total.tpl">
+<operation>
+<search><![CDATA[
+  </table>
+    ]]></search>
+<add position="after"><![CDATA[
+ <? if ($partner) { ?>
+<link rel="stylesheet" href="catalog/view/theme/default/stylesheet/hystmodal.min.css">
+<script src="catalog/view/javascript/hystmodal.min.js"></script>
+   <div class="buttons" id="custom-control">
+			  <div class="pull-left" id="custom-aff"><input type="checkbox" name="aff_add" value="1">&nbsp;&nbsp; <b>Доставить товар в пункт установки</b>
+			    			    &nbsp; &nbsp;
+			    <span class="inputs buttons"><a href="#" type="button" class="button btn-primary button_oc btn" data-hystmodal="#myModal">Где установить</a></span>
+			  </div>
+			  <div class="clearfix"></div>
+			</div>
+ <div class="hystmodal" id="myModal" aria-hidden="true">
+    <div class="hystmodal__wrap">
+        <div class="hystmodal__window" role="dialog" aria-modal="true">
+            <button data-hystclose class="hystmodal__close">Закрыть</button>
+  <script>
+ymaps.ready(function () {
+    mapHandler([55.76, 37.64], mapsArray, true);
+    myMap.container.fitToViewport();
+
+    partners = mapsArray;
+});
+ </script>
+          <script>
+            var mapsArray = [
+ <?php if (empty($affiliate_centr)) { ?>
+          {
+            geocode: '<?php echo $city; ?>',
+            iconCaption: 'Нет установочных центров.'
+          }
+ <?php } else { ?>
+   <?php foreach ($affiliate_centr as $affiliate) { ?>
+              {
+                geocode: '<?php echo $affiliate["geocode"]; ?>',
+                header: '<?php echo $affiliate["header"]; ?>',
+                body: '<?php echo $affiliate["body"]; ?>',
+                footer: '<?php echo $affiliate["footer"]; ?>',
+                iconCaption: '<?php echo $affiliate["header"]; ?>',
+                city: '<?php echo $affiliate["city"]; ?>',
+                street: '<?php echo $affiliate["street"]; ?>',
+                centr_id: '<?php echo $affiliate["centr_id"]; ?>'
+              },
+           <?php } ?>
+         <?php } ?>
+            ];
+          </script>
+          <script src="catalog/view/javascript/reverse_geocode.js" type="text/javascript"></script>
+          <style type="text/css">
+              html, body, #map {
+                  width: 100%;
+                  height: 100%;
+                  margin: 0;
+                  padding: 0;
+              }
+              #map {
+                min-height: 500px;
+              }
+          </style>
+
+
+          <div id="map"></div>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript"><!--
+const myModal = new HystModal({
+    linkAttributeName: "data-hystmodal",
+    // настройки (не обязательно), см. API
+    beforeOpen: function(modal){
+      //  setTimeout(() => {
+      //      myMap.container.fitToViewport();
+      //  }, 500);
+    },
+});
+//--></script>
+<div id="custom-add"> <br>
+     <?php if (empty($aff_centrs)) { ?>
+      <select name="custom-centr" id="custom-centr" class="form-control">
+          <option value="0">Нет партнеров</option>
+        </select>
+        <? } else { ?>
+        <select name="custom-centr" id="custom-centr" class="form-control">
+          <option value="0">Выбрать установочный центр</option>
+   <?php foreach ($aff_centrs as $affiliat) { ?>
+        <option value="<?php echo $affiliat['centr_id']; ?>"><?php echo $affiliat['adres']; ?></option>
+   <? } ?>
+    </select>
+    <? } ?>
+  </div>
+  <? } ?>
+            ]]></add>
+ </operation>
+</file>
+
+<file path="catalog/controller/extension/module/custom/payment.php">
+<operation>
+<search><![CDATA[
+ $json['session'] = $this->session->data;
+    ]]></search>
+<add position="before"><![CDATA[
+      if (!$json) {
+           $this->session->data['custom-centr'] = $this->request->post['custom-centr'];
+           }
+         ]]></add>
+ </operation>
+ </file>
+
+<file path="catalog/controller/checkout/confirm.php">
+<operation>
+<search><![CDATA[
+   $this->load->model('checkout/order');
+    ]]></search>
+<add position="before"><![CDATA[
+if (isset($this->session->data['custom-centr'])) {
+           $order_data['custom-centr'] = $this->session->data['custom-centr'];
+        }
+            ]]></add>
+ </operation>
+ </file>
+
+ <file path="catalog/controller/checkout/success.php">
+<operation>
+<search><![CDATA[
+   unset($this->session->data['totals']);
+    ]]></search>
+<add position="after"><![CDATA[
+            unset($this->session->data['custom-centr']);
+            unset($this->session->data['product_id']);
+            ]]></add>
+ </operation>
+ </file>
+
+ <file path="catalog/model/checkout/order.php">
+<operation>
+<search index="0"><![CDATA[
+ $order_product_id = $this->db->getLastId();
+    ]]></search>
+<add position="after"><![CDATA[
+if ($data['custom-centr'] > '0') {
+     $affiliate_id = $this->db->query("SELECT * FROM `" . DB_PREFIX . "affiliate_centr` WHERE centr_id = '" . (int)$data['custom-centr'] . "'")->row;
+        $this->db->query("INSERT INTO " . DB_PREFIX . "affiliate_order SET affiliate_id = '". (int)$affiliate_id['affiliate_id'] ."', affiliate_centr_id = '" . (int)$affiliate_id['affiliate_centr_id'] . "', order_id = '" . (int)$order_id . "', order_product_id = '" . (int)$product['product_id'] . "'");
+         }
+            ]]></add>
+ </operation>
+ <operation>
+<search><![CDATA[
+ $this->db->query("DELETE FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "'");
+    ]]></search>
+<add position="after"><![CDATA[
+$this->db->query("DELETE FROM `" . DB_PREFIX . "affiliate_order` WHERE order_id = '" . (int)$order_id . "'");
+            ]]></add>
+ </operation>
+ </file>
+ <file path="admin/model/sale/order.php">
+<operation>
+<search><![CDATA[
+   $this->db->query("DELETE FROM `" . DB_PREFIX . "affiliate_transaction` WHERE order_id = '" . (int)$order_id . "'");
+    ]]></search>
+<add position="after"><![CDATA[
+$this->db->query("DELETE FROM `" . DB_PREFIX . "affiliate_order` WHERE order_id = '" . (int)$order_id . "'");
+            ]]></add>
+ </operation>
+ </file>
+ </modification>

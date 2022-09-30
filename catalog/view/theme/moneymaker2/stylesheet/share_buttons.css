@@ -1,0 +1,22 @@
+.share_buttons {
+    margin: 0;
+    line-height: 35px;
+}
+.share_buttons .a2a_dd {
+	float: right;
+	padding-right: 10px;
+    border: none;
+    background: url(../image/share15.png) no-repeat;
+    background-position-y: center;
+}
+
+.share_buttons .a2a_dd:hover {
+	color:#bc0000;
+	background: url(../image/share15R.png) no-repeat;
+	text-decoration: underline;
+	background-position-y: center;
+}
+
+.share_buttons .a2a_dd span {
+    padding-left: 20px;
+}

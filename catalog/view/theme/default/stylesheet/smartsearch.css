@@ -1,0 +1,103 @@
+.smartsearch {
+    position: absolute;
+    width: 100%;
+    top: 39px;
+    z-index: 999;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    display: none;
+}
+.smartsearch ul.items {
+    margin: 0px;
+    padding: 0px;
+}
+.smartsearch li.item {
+    list-style-type: none;
+    border-top: 1px solid #ccc;
+}
+.smartsearch li.item.current {
+    background: #fcfeab;
+}
+.smartsearch li.item .item_block {
+    display: flex;
+    align-items: center;
+}
+.smartsearch li.item .item_block .image {
+    display: flex;
+    padding: 5px 10px;
+}
+.smartsearch li.item .item_block .image img {
+
+}
+.smartsearch li.item .item_block .title {
+    padding: 10px 10px;
+    width: 100%;
+}
+.smartsearch li.item .item_block .price {
+    display: flex;
+    padding: 10px 10px;
+    white-space: nowrap;
+    color: #444;
+}
+.smartsearch li.item .item_block .oldprice {
+    margin-right: 5px;
+    text-decoration: line-through;
+    font-size: 11px;
+    color: #cd0000;
+}
+.smartsearch li.item .item_block a {
+    width: 100%;
+    color:#333;
+}
+.smartsearch li.item .item_block a b {
+    color: #000;
+}
+.smartsearch .button {
+    text-align: center;
+    background: #eee;
+    padding: 10px 10px;
+}
+
+.smart-filter-cats {
+    /*padding-top: 10px;*/
+    /*margin-top: -10px;*/
+    border-bottom: none;
+    padding-bottom: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    margin-bottom: 0;
+}
+.smart-filter-cats>li {
+    float: none;
+    display: inline-block;
+    zoom: 1;
+    position: relative;
+    margin: 0 2px;
+    font-size: 10px;
+    max-width: 100px;
+}
+.smart-filter-cats img {
+    margin: 0 auto;
+}
+.slick-slide img.product-preview {
+    display: inline-block;
+    width: 24%;
+    vertical-align: super;
+}
+
+.smart-filter-product-description {
+     display: inline-table;
+     width: 72%;
+     vertical-align: top;
+    font-size: 12px;
+ }
+.smart-filter-homepage .slick-list .slick-slide {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.smart-filter-cats.row.text-center {
+    padding-left: 0;
+}
+/*.slick-list{padding:0 20% 0 0 !important;}*/

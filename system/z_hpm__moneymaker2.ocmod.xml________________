@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <code>hpm_moneymaker2</code>
+  <name><![CDATA[<font color:#4b0082;><b>HYPER Product Models</b> (moneymaker2)</font>]]></name>
+  <version>2.0.10</version>
+  <author>AM</author>
+  <link>https://awaro.ru/</link>
+  
+  <file path="catalog/view/theme/moneymaker2/template/product/product.tpl">
+    <operation>
+      <search index="0"><![CDATA[<div id="product"]]></search>
+      <add position="before"><![CDATA[<?php echo !empty($hpmodel['html']) ? $hpmodel['html'] : '';?>]]></add>
+    </operation>    
+    <operation error="skip">
+      <search><![CDATA[$('#button-cart').on('click', function() {]]></search>
+      <add position="replace"><![CDATA[$(document).on('click', '#button-cart', function() {]]></add>
+    </operation>    
+  </file>
+   
+  <file path="catalog/view/theme/moneymaker2/template/{product/*,extension/module/*}.tpl">
+    <operation error="skip">
+      <search><![CDATA[<div class="caption">]]></search>
+      <add position="before"><![CDATA[
+        <?php echo !empty($product['hpm_block']) ? $product['hpm_block'] : ''; ?>
+      ]]></add>
+    </operation>
+    <operation error="skip">
+      <search><![CDATA[href="<?php echo $product['href']; ?>"]]></search>
+      <add position="replace"><![CDATA[href="<?php echo $product['href']; ?>" data-hpm-href="1"]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/view/theme/moneymaker2/template/common/footer.tpl">    
+    <operation error="skip">
+      <search><![CDATA[</body>]]></search>
+      <add position="before"><![CDATA[
+<script>
+var hpm_config = hpm_config || {
+    event: {
+        select: function($c, $t) {
+            var $s = $c.find('.additional .stock'); var $bc = $c.find('.btn-group .btn-primary');
+            if ($t.data('qty') < 1) {
+                $s.removeClass('instock').text('Нет в наличии'); 
+                $bc.addClass('disabled').attr('title', '<p><span class=\'stock\'><span>Нет в наличии</span></span></p>').attr('onclick', '').tooltip('destroy').tooltip({container: 'body',trigger: 'hover'});
+            } else {
+                $s.addClass('instock').text('На складе');              
+                $bc.removeClass('disabled').attr('title', '').attr('onclick', 'cart.add('+$t.data('id')+',1)').tooltip('destroy');
+            }
+            return true;
+        }
+    }
+};
+</script>
+      ]]></add>
+    </operation>
+  </file>
+
+</modification>
