@@ -60,6 +60,9 @@ class ModelCatalogProduct extends Model {
 				'date_added'       => $query->row['date_added'],
 				'date_modified'    => $query->row['date_modified'],
                 'product_stickers' => $query->row['product_stickers'],
+/* Product and cart modification*/
+                'product_shippings' => $query->row['product_shippings'],
+/* Product and cart modification*/
                 'video_in_product' => $query->row['video_in_product'],
                 'video_in_product1' => $query->row['video_in_product1'],
                 'video_in_product2' => $query->row['video_in_product2'],
