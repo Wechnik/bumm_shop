@@ -41,38 +41,51 @@
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($products as $product) { ?>
-              <tr>
-                <td class="text-center"><?php if ($product['thumb']) { ?>
-                  <a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" class="img-thumbnail" /></a>
-                  <?php } ?></td>
-                <td class="text-left"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
-                  <?php if (!$product['stock']) { ?>
-                  <span class="text-danger">***</span>
-                  <?php } ?>
-                  <?php if ($product['option']) { ?>
-                  <?php foreach ($product['option'] as $option) { ?>
-                  <br />
-                  <small><?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
-                  <?php } ?>
-                  <?php } ?>
-                  <?php if ($product['reward']) { ?>
-                  <br />
-                  <small><?php echo $product['reward']; ?></small>
-                  <?php } ?>
-                  <?php if ($product['recurring']) { ?>
-                  <br />
-                  <span class="label label-info"><?php echo $text_recurring_item; ?></span> <small><?php echo $product['recurring']; ?></small>
-                  <?php } ?></td>
-                <td class="text-left"><?php echo $product['model']; ?></td>
-                <td class="text-left"><div class="input-group btn-block" style="max-width: 200px;">
-                    <input type="text" name="quantity[<?php echo $product['cart_id']; ?>]" value="<?php echo $product['quantity']; ?>" size="1" class="form-control" />
-                    <span class="input-group-btn">
-                    <button type="submit" data-toggle="tooltip" title="<?php echo $button_update; ?>" class="btn btn-link"><i class="fa fa-refresh"></i></button>
-                    <button type="button" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-link text-special" onclick="cart.remove('<?php echo $product['cart_id']; ?>');"><i class="fa fa-times-circle"></i></button></span></div></td>
-                <td class="text-right"><?php echo $product['price']; ?></td>
-                <td class="text-right"><?php echo $product['total']; ?></td>
+              <?php foreach ($products as $key => $shipps) { ?>
+                <tr>
+                    <td colspan=7><?php echo $shippings[$key]; ?></td>
+                </tr>
+                <?php foreach($shipps as $product){ ?>    
+                    
+                  <tr>
+                    <td class="text-center"><?php if ($product['thumb']) { ?>
+                      <a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" class="img-thumbnail" /></a>
+                      <?php } ?></td>
+                    <td class="text-left"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
+                      <?php if (!$product['stock']) { ?>
+                      <span class="text-danger">***</span>
+                      <?php } ?>
+                      <?php if ($product['option']) { ?>
+                      <?php foreach ($product['option'] as $option) { ?>
+                      <br />
+                      <small><?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
+                      <?php } ?>
+                      <?php } ?>
+                      <?php if ($product['reward']) { ?>
+                      <br />
+                      <small><?php echo $product['reward']; ?></small>
+                      <?php } ?>
+                      <?php if ($product['recurring']) { ?>
+                      <br />
+                      <span class="label label-info"><?php echo $text_recurring_item; ?></span> <small><?php echo $product['recurring']; ?></small>
+                      <?php } ?></td>
+                    <td class="text-left"><?php echo $product['model']; ?></td>
+                    <td class="text-left"><div class="input-group btn-block" style="max-width: 200px;">
+                        <input type="text" name="quantity[<?php echo $product['cart_id']; ?>]" value="<?php echo $product['quantity']; ?>" size="1" class="form-control" />
+                        <span class="input-group-btn">
+                        <button type="submit" data-toggle="tooltip" title="<?php echo $button_update; ?>" class="btn btn-link"><i class="fa fa-refresh"></i></button>
+                        <button type="button" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-link text-special" onclick="cart.remove('<?php echo $product['cart_id']; ?>');"><i class="fa fa-times-circle"></i></button></span></div></td>
+                    <td class="text-right"><?php echo $product['price']; ?></td>
+                    <td class="text-right"><?php echo $product['total']; ?></td>
+
+     </form>
+           <form action="<?php echo $checkout; ?>" method="post" enctype="multipart/form-data">
+     <td class="text-right"><button type="submit" class="btn btn-primary"><?php echo $button_checkout; ?></button></td>
+       <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>"/>
+            </form>
+                
               </tr>
+              <?php } ?>
               <?php } ?>
               <?php foreach ($vouchers as $voucher) { ?>
               <tr>
