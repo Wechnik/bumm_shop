@@ -94,9 +94,14 @@
 			/*mmr*/
 			
 			$data['products'] = array();
-			
-			
+/*Product and cart modification */
+			$this->load->model('catalog/product');
+			$data['shippings'] = array();
+/*Product and cart modification */				
 			foreach ($this->cart->getProducts() as $product) {
+/*Product and cart modification */
+			    $product_info = $this->model_catalog_product->getProduct($product['product_id']);
+/*Product and cart modification */			    
 				if ($product['image']) {
 					$image = $this->model_tool_image->resize($product['image'], $this->config->get($this->config->get('config_theme') . '_image_cart_width'), $this->config->get($this->config->get('config_theme') . '_image_cart_height'));
 				} else {
@@ -135,8 +140,67 @@
 					$price = false;
 					$total = false;
 				}
+/*Product and cart modification */				
+				$shippings = json_decode($product_info['product_shippings']);
+				if(is_null($shippings)){
+    				$data['shippings']['none'] = 'Нет доставки';
+				    $data['products']['none'][] = array(
+    					'cart_id'   => $product['cart_id'],
+    					'thumb'     => $image,
+    					'name'      => $product['name'],
+    					'model'     => $product['model'],
+    					'option'    => $option_data,
+    					'recurring' => ($product['recurring'] ? $product['recurring']['name'] : ''),
+    					'quantity'  => $product['quantity'],
+    					'price'     => $price,
+    					'total'     => $total,
+    					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+    				);
+				} elseif(count($shippings) == 1){
+			    	foreach ($shippings as $shipping){
+    				    $this->load->language('extension/shipping/' . $shipping);
+				        $data['shippings'][$shipping] = $this->language->get('text_title');
 				
-				$data['products'][] = array(
+    				    $data['products'][$shipping][] = array(
+        					'cart_id'   => $product['cart_id'],
+        					'thumb'     => $image,
+        					'name'      => $product['name'],
+        					'model'     => $product['model'],
+        					'option'    => $option_data,
+        					'recurring' => ($product['recurring'] ? $product['recurring']['name'] : ''),
+        					'quantity'  => $product['quantity'],
+        					'price'     => $price,
+        					'total'     => $total,
+        					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+        				);
+    				}
+			        
+				} else {
+				    
+				    $shipp = '';
+				    $shipp_text = ''; 
+				    foreach ($shippings as $shipping){
+				        $this->load->language('extension/shipping/' . $shipping);
+				        $shipp .= '+' . $shipping;  
+				        $shipp_text .= $this->language->get('text_title') . ', ';
+				    }
+				    
+			        $data['shippings'][$shipp] = $shipp_text;
+				    $data['products'][$shipp][] = array(
+    					'cart_id'   => $product['cart_id'],
+    					'thumb'     => $image,
+    					'name'      => $product['name'],
+    					'model'     => $product['model'],
+    					'option'    => $option_data,
+    					'recurring' => ($product['recurring'] ? $product['recurring']['name'] : ''),
+    					'quantity'  => $product['quantity'],
+    					'price'     => $price,
+    					'total'     => $total,
+    					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+    				);
+				}
+				
+				/*$data['products'][] = array(
 					'cart_id'   => $product['cart_id'],
 					'thumb'     => $image,
 					'name'      => $product['name'],
@@ -147,7 +211,8 @@
 					'price'     => $price,
 					'total'     => $total,
 					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
-				);
+				);*/
+/*Product and cart modification */
 			}
 			
 			// Gift Voucher
@@ -285,9 +350,16 @@
 			/*mmr*/
 			
 			$data['products1'] = array();
+/*Product and cart modification */
+			$data['shippings'] = array();
 			
-			
+			$this->load->model('catalog/product');
+/*Product and cart modification */			
+
 			foreach ($this->cart->getProducts() as $product) {
+/*Product and cart modification */
+			    $product_info = $this->model_catalog_product->getProduct($product['product_id']);
+/*Product and cart modification */			    
 				if ($product['image']) {
 					$image = $this->model_tool_image->resize($product['image'], $this->config->get($this->config->get('config_theme') . '_image_cart_width'), $this->config->get($this->config->get('config_theme') . '_image_cart_height'));
 				} else {
@@ -327,6 +399,66 @@
 					$total = false;
 				}
 				
+/*Product and cart modification */
+				$shippings = json_decode($product_info['product_shippings']);
+				if(is_null($shippings)){
+    			
+			        $data['shippings']['none'] = 'Нет доставки';
+				    $data['products1']['none'][] = array(
+    					'cart_id'   => $product['cart_id'],
+    					'thumb'     => $image,
+    					'name'      => $product['name'],
+    					'model'     => $product['model'],
+    					'option'    => $option_data,
+    					'recurring' => ($product['recurring'] ? $product['recurring']['name'] : ''),
+    					'quantity'  => $product['quantity'],
+    					'price'     => $price,
+    					'total'     => $total,
+    					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+    				);
+				} elseif(count($shippings) == 1){
+			    	foreach ($shippings as $shipping){
+    				    $this->load->language('extension/shipping/' . $shipping);
+				        $data['shippings'][$shipping] = $this->language->get('text_title');
+				
+    				    $data['products1'][$shipping][] = array(
+        					'cart_id'   => $product['cart_id'],
+        					'thumb'     => $image,
+        					'name'      => $product['name'],
+        					'model'     => $product['model'],
+        					'option'    => $option_data,
+        					'recurring' => ($product['recurring'] ? $product['recurring']['name'] : ''),
+        					'quantity'  => $product['quantity'],
+        					'price'     => $price,
+        					'total'     => $total,
+        					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+        				);
+    				}
+				} else {
+				    
+				    $shipp = '';
+				    $shipp_text = ''; 
+				    foreach ($shippings as $shipping){
+				        $this->load->language('extension/shipping/' . $shipping);
+				        $shipp .= '+' . $shipping;  
+				        $shipp_text .= $this->language->get('text_title') . ', ';
+				    }
+				    
+			        $data['shippings'][$shipp] = $shipp_text;
+				    $data['products1'][$shipp][] = array(
+    					'cart_id'   => $product['cart_id'],
+    					'thumb'     => $image,
+    					'name'      => $product['name'],
+    					'model'     => $product['model'],
+    					'option'    => $option_data,
+    					'recurring' => ($product['recurring'] ? $product['recurring']['name'] : ''),
+    					'quantity'  => $product['quantity'],
+    					'price'     => $price,
+    					'total'     => $total,
+    					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+    				);
+				}
+				/*
 				$data['products1'][] = array(
 					'cart_id'   => $product['cart_id'],
 					'thumb'     => $image,
@@ -338,7 +470,8 @@
 					'price'     => $price,
 					'total'     => $total,
 					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
-				);
+				);*/
+/*Product and cart modification */
 			}
 			
 			// Gift Voucher
