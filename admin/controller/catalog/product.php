@@ -962,8 +962,40 @@ class ControllerCatalogProduct extends Controller {
         } else {
             $data['current_product_stickers'] = [];
         }
+/*Product and cart modification*/
+        $method_data = array();
+
+		$this->load->model('extension/extension');
+
+		$results = $this->model_extension_extension->getInstalled('shipping');
+
+		foreach ($results as $result) {
+			if ($this->config->get($result . '_status')) {
+				$this->load->language('extension/shipping/' . $result);
+				$method_data[$result] = array(
+					'title'     => $this->language->get('heading_title'),
+					'code'      => $result,
+				);
+			}
+		}
+
+        $data['product_shippings'] = [];
+
+        $data['product_shippings'] = $method_data;
 
 
+        if (isset($this->request->post['product_shippings'])) {
+            $data['current_product_shippings'] = $this->request->post['product_shippings'];
+        } elseif (!empty($product_info)) {
+            if(!is_null(json_decode($product_info['product_shippings'], true))){
+                $data['current_product_shippings'] = json_decode($product_info['product_shippings'], true);
+            } else{
+                $data['current_product_shippings'] = [];
+            }
+        } else {
+            $data['current_product_shippings'] = [];
+        }
+/*Product and cart modification*/
         $data['smart_filters'] = array();
 
         if (isset($this->request->post['product_attribute'])) {
