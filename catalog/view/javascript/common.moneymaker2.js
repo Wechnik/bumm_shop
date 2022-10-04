@@ -286,6 +286,7 @@ var cart = {
                         var moneymaker2_total_sum = json['moneymaker2_total_sum'];
                         $('#popupCart #cart-total').html(moneymaker2_total_sum);
                         $('#cart > .dropdown-toggle #cart-total').html(moneymaker2_total_sum);
+                        $('#cart #cart-total').html(moneymaker2_total_sum);
                         $('#popupCart .fa-stack .fa-stack-1x, .navbar-cart-toggle .fa-stack .fa-stack-1x').html(moneymaker2_total_count);
                         $('#cart > .dropdown-toggle .fa-stack .fa-stack-1x, .navbar-cart-toggle .fa-stack .fa-stack-1x').html(moneymaker2_total_count);
                     }, 100);
@@ -328,6 +329,7 @@ var cart = {
                     var moneymaker2_total_count = json['moneymaker2_total_count'];
                     var moneymaker2_total_sum = json['moneymaker2_total_sum'];
                     $('#cart > .dropdown-toggle #cart-total').html(moneymaker2_total_sum);
+                    $('#cart #cart-total').html(moneymaker2_total_sum);
                     $('#popupCart > .dropdown-toggle #cart-total').html(moneymaker2_total_sum);
                     $('#popupCart .fa-stack .fa-stack-1x, .navbar-cart-toggle .fa-stack .fa-stack-1x').html(moneymaker2_total_count);
                     $('#cart > .dropdown-toggle .fa-stack .fa-stack-1x, .navbar-cart-toggle .fa-stack .fa-stack-1x').html(moneymaker2_total_count);
@@ -369,9 +371,9 @@ var cart = {
                 setTimeout(function () {
                     var moneymaker2_total_count = json['moneymaker2_total_count'];
                     $('#popupCart .fa-stack .fa-stack-1x, .navbar-cart-toggle .fa-stack .fa-stack-1x').html(moneymaker2_total_count);
-                    $('#cart > .dropdown-toggle .fa-stack .fa-stack-1x, .navbar-cart-toggle .fa-stack .fa-stack-1x').html(moneymaker2_total_count);
+                    $('#cart .fa-stack .fa-stack-1x, .navbar-cart-toggle .fa-stack .fa-stack-1x').html(moneymaker2_total_count);
                     $('#popupCart span').load('index.php?route=common/cart/info #cart-total');
-                    $('#cart > .dropdown-toggle > span').load('index.php?route=common/cart/info .dropdown-toggle #cart-total');
+                    $('#cart span').load('index.php?route=common/cart/info  #cart-total');
                 }, 100);
 
                 //if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
