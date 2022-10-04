@@ -71,11 +71,22 @@ class ControllerCheckoutCart extends Controller {
 			$this->load->model('tool/image');
 			$this->load->model('tool/upload');
 
+		/*Product and cart modification */	
+			$this->load->model('catalog/product');
+/*Product and cart modification */
 			$data['products'] = array();
 
+/*Product and cart modification */
+			
+			$data['shippings'] = array();
+				
+/*Product and cart modification */
 			$products = $this->cart->getProducts();
 
 			foreach ($products as $product) {
+/*Product and cart modification */
+			    $product_info = $this->model_catalog_product->getProduct($product['product_id']);
+/*Product and cart modification */
 				$product_total = 0;
 
 				foreach ($products as $product_2) {
@@ -147,9 +158,79 @@ class ControllerCheckoutCart extends Controller {
 						$recurring .= sprintf($this->language->get('text_payment_cancel'), $this->currency->format($this->tax->calculate($product['recurring']['price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']), $product['recurring']['cycle'], $frequencies[$product['recurring']['frequency']], $product['recurring']['duration']);
 					}
 				}
+/*Product and cart modification */
+				$shippings = json_decode($product_info['product_shippings']);
+				if(is_null($shippings)){
+				    $data['shippings']['none'] = 'Нет доставки';
+				    $data['products']['none'][] = array(
+    					'product_id'=> $product['product_id'],
+	            		'cart_id'   => $product['cart_id'],
+						'thumb'     => $image,
+						'name'      => $product['name'],
+						'model'     => $product['model'],
+						'option'    => $option_data,
+						'recurring' => $recurring,
+						'quantity'  => $product['quantity'],
+						'stock'     => $product['stock'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
+						'reward'    => ($product['reward'] ? sprintf($this->language->get('text_points'), $product['reward']) : ''),
+						'price'     => $price,
+						'total'     => $total,
+						'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+					);
+				
+    			} elseif(count($shippings) == 1){
+    			    foreach ($shippings as $shipping){
+    				    $this->load->language('extension/shipping/' . $shipping);
+				        $data['shippings'][$shipping] = $this->language->get('text_title');
+				
+    				    $data['products'][$shipping][] = array(
+	    					'product_id'=> $product['product_id'],
+		            		'cart_id'   => $product['cart_id'],
+							'thumb'     => $image,
+							'name'      => $product['name'],
+							'model'     => $product['model'],
+							'option'    => $option_data,
+							'recurring' => $recurring,
+							'quantity'  => $product['quantity'],
+							'stock'     => $product['stock'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
+							'reward'    => ($product['reward'] ? sprintf($this->language->get('text_points'), $product['reward']) : ''),
+							'price'     => $price,
+							'total'     => $total,
+							'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+						);
+    				}
+				
+			    } else {
+				    
+				    $shipp = '';
+				    $shipp_text = ''; 
+				    foreach ($shippings as $shipping){
+				        $this->load->language('extension/shipping/' . $shipping);
+				        $shipp .= '+' . $shipping;  
+				        $shipp_text .= $this->language->get('text_title') . ', ';
+				    }
+				    
+			        $data['shippings'][$shipp] = $shipp_text;
+				    $data['products'][$shipp][] = array(
+    					'product_id'=> $product['product_id'],
+	            		'cart_id'   => $product['cart_id'],
+						'thumb'     => $image,
+						'name'      => $product['name'],
+						'model'     => $product['model'],
+						'option'    => $option_data,
+						'recurring' => $recurring,
+						'quantity'  => $product['quantity'],
+						'stock'     => $product['stock'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
+						'reward'    => ($product['reward'] ? sprintf($this->language->get('text_points'), $product['reward']) : ''),
+						'price'     => $price,
+						'total'     => $total,
+						'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+					);
+				}				
 
-				$data['products'][] = array(
-					'cart_id'   => $product['cart_id'],
+/*				$data['products'][] = array(
+					'product_id'=> $product['product_id'],
+            		'cart_id'   => $product['cart_id'],
 					'thumb'     => $image,
 					'name'      => $product['name'],
 					'model'     => $product['model'],
@@ -161,7 +242,9 @@ class ControllerCheckoutCart extends Controller {
 					'price'     => $price,
 					'total'     => $total,
 					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
-				);
+				);*/
+/*Product and cart modification */
+
 			}
 
 			// Gift Voucher
