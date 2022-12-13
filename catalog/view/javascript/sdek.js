@@ -105,6 +105,16 @@ function selectPvz(pvz_code) {
             if(json.status) {
                 $('.cdek_selectedPvzInfo').html('');
                 $('#cdek_selectedPvzInfo_'+selected_tariff).html(json.data.address);
+                $('#custom-shipping-address input[name="address_1"]').val(json.data.address);
+                $('#custom-shipping-address input[name="shipping_address"]').each(function(){
+                    if($(this).val() == 'new'){
+                        $(this).prop("checked", true);
+                        $('#shipping-new').css('display','block');
+                    } else{
+                        $(this).prop("checked", false);
+                        $('#shipping-new').css('display','none');
+                    }
+                });
             }
         },
         error: function(data) {

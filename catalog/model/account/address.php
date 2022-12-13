@@ -19,6 +19,10 @@ class ModelAccountAddress extends Model {
 			$this->db->query("UPDATE " . DB_PREFIX . "customer SET address_id = '" . (int)$address_id . "' WHERE customer_id = '" . (int)$this->customer->getId() . "'");
 		}
 	}
+	public function validateAddress($data){
+	    $address_query = $this->db->query("SELECT `address_id` FROM `" . DB_PREFIX . "address` WHERE firstname = '" . $this->db->escape($data['firstname']) . "' AND lastname = '" . $this->db->escape($data['lastname']) . "' AND company = '" . $this->db->escape($data['company']) . "' AND address_1 = '" . $this->db->escape($data['address_1']) . "' AND address_2 = '" . $this->db->escape($data['address_2']) . "' AND postcode = '" . $this->db->escape($data['postcode']) . "' AND city = '" . $this->db->escape($data['city']) . "' AND zone_id = '" . (int)$data['zone_id'] . "' AND country_id = '" . (int)$data['country_id'] . "' AND custom_field = '" . $this->db->escape(isset($data['custom_field']) ? json_encode($data['custom_field']) : '') . "' AND customer_id = '" . (int)$this->customer->getId() . "'");
+        return (int)$address_query->row['address_id'];
+	}
 
 	public function deleteAddress($address_id) {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "address WHERE address_id = '" . (int)$address_id . "' AND customer_id = '" . (int)$this->customer->getId() . "'");

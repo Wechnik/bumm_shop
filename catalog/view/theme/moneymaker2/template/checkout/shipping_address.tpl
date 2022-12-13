@@ -9,9 +9,9 @@
     <select name="address_id" class="form-control">
       <?php foreach ($addresses as $address) { ?>
       <?php if ($address['address_id'] == $address_id) { ?>
-      <option value="<?php echo $address['address_id']; ?>" selected="selected"><?php echo $address['firstname']; ?> <?php echo $address['lastname']; ?>, <?php echo $address['address_1']; ?>, <?php echo $address['city']; ?>, <?php echo $address['zone']; ?>, <?php echo $address['country']; ?></option>
+      <option value="<?php echo $address['address_id']; ?>" selected="selected"><?php echo $address['firstname']; ?> <?php echo $address['lastname']; ?><?php if($address['address_1'] != ''){ ?>, <?php echo $address['address_1']; ?><?php }?><?php if($address['city'] != ''){ ?>, <?php echo $address['city']; ?><?php } ?><?php if($address['zone'] != ''){ ?>, <?php echo $address['zone']; ?><?php } ?><?php if($address['country'] != ''){ ?>, <?php echo $address['country']; ?><?php } ?></option>
       <?php } else { ?>
-      <option value="<?php echo $address['address_id']; ?>"><?php echo $address['firstname']; ?> <?php echo $address['lastname']; ?>, <?php echo $address['address_1']; ?>, <?php echo $address['city']; ?>, <?php echo $address['zone']; ?>, <?php echo $address['country']; ?></option>
+      <option value="<?php echo $address['address_id']; ?>"><?php echo $address['firstname']; ?> <?php echo $address['lastname']; ?><?php if($address['address_1'] != ''){ ?>, <?php echo $address['address_1']; ?><?php }?><?php if($address['city'] != ''){ ?>, <?php echo $address['city']; ?><?php } ?><?php if($address['zone'] != ''){ ?>, <?php echo $address['zone']; ?><?php } ?><?php if($address['country'] != ''){ ?>, <?php echo $address['country']; ?><?php } ?></option>
       <?php } ?>
       <?php } ?>
     </select>
@@ -57,7 +57,7 @@
     <div class="form-group required">
       <label class="col-sm-2 control-label" for="input-shipping-city"><?php echo $entry_city; ?></label>
       <div class="col-sm-10">
-        <input type="text" name="city" value="" placeholder="<?php echo $entry_city; ?>" id="input-shipping-city" class="form-control" />
+        <input type="text" name="city" value="<?= $city; ?>" placeholder="<?php echo $entry_city; ?>" id="input-shipping-city" class="form-control" />
       </div>
     </div>
     <div class="form-group required">
@@ -207,141 +207,141 @@
 </form>
 <script type="text/javascript"><!--
 $('input[name=\'shipping_address\']').on('change', function() {
-	if (this.value == 'new') {
-		$('#shipping-existing').hide();
-		$('#shipping-new').show();
-	} else {
-		$('#shipping-existing').show();
-		$('#shipping-new').hide();
-	}
+  if (this.value == 'new') {
+    $('#shipping-existing').hide();
+    $('#shipping-new').show();
+  } else {
+    $('#shipping-existing').show();
+    $('#shipping-new').hide();
+  }
 });
 //--></script>
 <script type="text/javascript"><!--
 $('#collapse-shipping-address .form-group[data-sort]').detach().each(function() {
-	if ($(this).attr('data-sort') >= 0 && $(this).attr('data-sort') <= $('#collapse-shipping-address .form-group').length-2) {
-		$('#collapse-shipping-address .form-group').eq(parseInt($(this).attr('data-sort'))+2).before(this);
-	}
+  if ($(this).attr('data-sort') >= 0 && $(this).attr('data-sort') <= $('#collapse-shipping-address .form-group').length-2) {
+    $('#collapse-shipping-address .form-group').eq(parseInt($(this).attr('data-sort'))+2).before(this);
+  }
 
-	if ($(this).attr('data-sort') > $('#collapse-shipping-address .form-group').length-2) {
-		$('#collapse-shipping-address .form-group:last').after(this);
-	}
+  if ($(this).attr('data-sort') > $('#collapse-shipping-address .form-group').length-2) {
+    $('#collapse-shipping-address .form-group:last').after(this);
+  }
 
-	if ($(this).attr('data-sort') == $('#collapse-shipping-address .form-group').length-2) {
-		$('#collapse-shipping-address .form-group:last').after(this);
-	}
+  if ($(this).attr('data-sort') == $('#collapse-shipping-address .form-group').length-2) {
+    $('#collapse-shipping-address .form-group:last').after(this);
+  }
 
-	if ($(this).attr('data-sort') < -$('#collapse-shipping-address .form-group').length-2) {
-		$('#collapse-shipping-address .form-group:first').before(this);
-	}
+  if ($(this).attr('data-sort') < -$('#collapse-shipping-address .form-group').length-2) {
+    $('#collapse-shipping-address .form-group:first').before(this);
+  }
 });
 //--></script>
 <script type="text/javascript"><!--
 $('#collapse-shipping-address button[id^=\'button-shipping-custom-field\']').on('click', function() {
-	var node = this;
+  var node = this;
 
-	$('#form-upload').remove();
+  $('#form-upload').remove();
 
-	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+  $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
 
-	$('#form-upload input[name=\'file\']').trigger('click');
+  $('#form-upload input[name=\'file\']').trigger('click');
 
-	if (typeof timer != 'undefined') {
-			clearInterval(timer);
-	}
+  if (typeof timer != 'undefined') {
+      clearInterval(timer);
+  }
 
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
+  timer = setInterval(function() {
+    if ($('#form-upload input[name=\'file\']').val() != '') {
+      clearInterval(timer);
 
-			$.ajax({
-				url: 'index.php?route=tool/upload',
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).button('loading');
-				},
-				complete: function() {
-					$(node).button('reset');
-				},
-				success: function(json) {
-					$(node).parent().find('.text-danger').remove();
+      $.ajax({
+        url: 'index.php?route=tool/upload',
+        type: 'post',
+        dataType: 'json',
+        data: new FormData($('#form-upload')[0]),
+        cache: false,
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+          $(node).button('loading');
+        },
+        complete: function() {
+          $(node).button('reset');
+        },
+        success: function(json) {
+          $(node).parent().find('.text-danger').remove();
 
-					if (json['error']) {
-						$(node).parent().find('input[name^=\'custom_field\']').after('<div class="text-danger">' + json['error'] + '</div>');
-					}
+          if (json['error']) {
+            $(node).parent().find('input[name^=\'custom_field\']').after('<div class="text-danger">' + json['error'] + '</div>');
+          }
 
-					if (json['success']) {
-						alert(json['success']);
+          if (json['success']) {
+            alert(json['success']);
 
-						$(node).parent().find('input[name^=\'custom_field\']').val(json['code']);
-					}
-				},
-				error: function(xhr, ajaxOptions, thrownError) {
-					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-				}
-			});
-		}
-	}, 500);
+            $(node).parent().find('input[name^=\'custom_field\']').val(json['code']);
+          }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+          alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+      });
+    }
+  }, 500);
 });
 //--></script>
 <script type="text/javascript"><!--
 $('.date').datetimepicker({
-	pickTime: false
+  pickTime: false
 });
 
 $('.time').datetimepicker({
-	pickDate: false
+  pickDate: false
 });
 
 $('.datetime').datetimepicker({
-	pickDate: true,
-	pickTime: true
+  pickDate: true,
+  pickTime: true
 });
 //--></script>
 <script type="text/javascript"><!--
 $('#collapse-shipping-address select[name=\'country_id\']').on('change', function() {
-	$.ajax({
-		url: 'index.php?route=checkout/checkout/country&country_id=' + this.value,
-		dataType: 'json',
-		beforeSend: function() {
-			$('#collapse-shipping-address select[name=\'country_id\']').after(' <i class="fa fa-circle-o-notch fa-spin"></i>');
-		},
-		complete: function() {
-			$('.fa-spin').remove();
-		},
-		success: function(json) {
-			if (json['postcode_required'] == '1') {
-				$('#collapse-shipping-address input[name=\'postcode\']').parent().parent().addClass('required');
-			} else {
-				$('#collapse-shipping-address input[name=\'postcode\']').parent().parent().removeClass('required');
-			}
+  $.ajax({
+    url: 'index.php?route=checkout/checkout/country&country_id=' + this.value,
+    dataType: 'json',
+    beforeSend: function() {
+      $('#collapse-shipping-address select[name=\'country_id\']').after(' <i class="fa fa-circle-o-notch fa-spin"></i>');
+    },
+    complete: function() {
+      $('.fa-spin').remove();
+    },
+    success: function(json) {
+      if (json['postcode_required'] == '1') {
+        $('#collapse-shipping-address input[name=\'postcode\']').parent().parent().addClass('required');
+      } else {
+        $('#collapse-shipping-address input[name=\'postcode\']').parent().parent().removeClass('required');
+      }
 
-			html = '<option value=""><?php echo $text_select; ?></option>';
+      html = '<option value=""><?php echo $text_select; ?></option>';
 
-			if (json['zone'] && json['zone'] != '') {
-				for (i = 0; i < json['zone'].length; i++) {
-					html += '<option value="' + json['zone'][i]['zone_id'] + '"';
+      if (json['zone'] && json['zone'] != '') {
+        for (i = 0; i < json['zone'].length; i++) {
+          html += '<option value="' + json['zone'][i]['zone_id'] + '"';
 
-					if (json['zone'][i]['zone_id'] == '<?php echo $zone_id; ?>') {
-						html += ' selected="selected"';
-					}
+          if (json['zone'][i]['zone_id'] == '<?php echo $zone_id; ?>') {
+            html += ' selected="selected"';
+          }
 
-					html += '>' + json['zone'][i]['name'] + '</option>';
-				}
-			} else {
-				html += '<option value="0" selected="selected"><?php echo $text_none; ?></option>';
-			}
+          html += '>' + json['zone'][i]['name'] + '</option>';
+        }
+      } else {
+        html += '<option value="0" selected="selected"><?php echo $text_none; ?></option>';
+      }
 
-			$('#collapse-shipping-address select[name=\'zone_id\']').html(html);
-		},
-		error: function(xhr, ajaxOptions, thrownError) {
-			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-		}
-	});
+      $('#collapse-shipping-address select[name=\'zone_id\']').html(html);
+    },
+    error: function(xhr, ajaxOptions, thrownError) {
+      alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    }
+  });
 });
 
 $('#collapse-shipping-address select[name=\'country_id\']').trigger('change');

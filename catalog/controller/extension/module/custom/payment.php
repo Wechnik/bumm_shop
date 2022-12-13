@@ -146,6 +146,13 @@ class ControllerExtensionModuleCustomPayment extends Controller {
 			$this->session->data['payment_method'] = $this->session->data['payment_methods'][$this->request->post['payment_method']];
 		}
 
+
+		if (!$json) {
+        		if(isset($this->request->post['custom-centr'])){
+           			$this->session->data['custom-centr'] = $this->request->post['custom-centr'];
+        		}
+      		}
+         
 		$json['session'] = $this->session->data;
 
 		$this->response->addHeader('Content-Type: application/json');

@@ -39,7 +39,7 @@
 				</div>
 			<?php } ?>
 
-			<?php if (isset($customer) && !$logged) { ?>
+			<?php if (isset($customer)) { ?>
 				<div id="custom-customer">
 					<?php echo $customer; ?>
 				</div>

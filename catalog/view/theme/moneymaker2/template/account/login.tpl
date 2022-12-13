@@ -34,8 +34,8 @@
             <p><strong><?php echo $text_i_am_returning_customer; ?></strong></p>
             <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
               <div class="form-group">
-                <label class="control-label" for="input-email"><?php echo $entry_email; ?></label>
-                <input type="text" name="email" value="<?php echo $email; ?>" placeholder="<?php echo $entry_email; ?>" id="input-email" class="form-control" />
+                <label class="control-label" for="input-telephone"><?php echo $entry_telephone; ?></label>
+                <input type="text" name="telephone" value="<?php echo $telephone; ?>" placeholder="<?php echo $entry_telephone; ?>" id="input-telephone" class="form-control" />
               </div>
               <div class="form-group">
                 <label class="control-label" for="input-password"><?php echo $entry_password; ?></label>

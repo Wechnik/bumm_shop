@@ -97,7 +97,7 @@
 			<div class="navbar-header">
 				<?php if (!$moneymaker2_header_strip_expanded) { ?>
 					<a id="main-menu-toggle" href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-top-collapse, .navbar-menu-collapse"><i class="fa fa-fw fa-bars"></i></a>
-					<a href="javascript:void(0);" class="modal-cart visible-xs">
+					<a href="<?=$go_cart?>" class="modal-cart visible-xs">
 						<i class="fa fa-fw fa-shopping-cart" ></i>
 <!--						--><?php //if($count_cart_products != 0) { ?>
 <!--							<small class="fa-stack">-->
@@ -371,13 +371,13 @@
 		
 		
 	});
-	$('.modal-cart').on('click', function(){
+	/*$('.modal-cart').on('click', function(){
 		$('#myModalBoxCart').modal({
 			backdrop: true,
 			keyboard: true,
 			show: true
 		});
-	});
+	});*/
 </script>
 <?php if($product_page) { ?>
 	<script>

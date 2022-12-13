@@ -380,6 +380,14 @@ var cart = {
                 var now_location = String(document.location.pathname);
                 if ((now_location == '/cart/') || (now_location == '/checkout/') || (getURLVar('route') == 'checkout/cart') || (getURLVar('route') == 'checkout/checkout')) {
                     location = 'index.php?route=checkout/cart';
+                } else if(now_location == '/shopping-cart/') {
+                   $('form .table-responsive').html(json['table']);
+                   $('.total').text(json['total_sum']);
+                   if($('.catalog-msg').length > 0){
+                        $('form .table-responsive').parent().html(json['table']);
+                        $('.total').parent().css('display', 'none');
+                        $('#content > .catalog-thumb').css('display', 'none');
+                   }
                 } else {
                     $('#cart > ul').load('index.php?route=common/cart/info ul li');
                     $( "#popupCart > ul" ).load('index.php?route=common/cart/popup_info ul li');

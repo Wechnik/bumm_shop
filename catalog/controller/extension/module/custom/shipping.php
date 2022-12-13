@@ -8,9 +8,30 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 			$this->load->language('extension/module/custom/shipping');
 
 			// Получаем методы доставки
+			$this->load->model('catalog/product');
 			$data['shipping_methods'] = $this->session->data['shipping_methods'] = $this->getMethods();
-
-			$data['heading_shipping'] = $this->language->get('heading_shipping');
+			foreach ($this->session->data['product_id'] as $cart_id){
+				$product_id = $this->cart->getProductId($cart_id);
+				$product_info = $this->model_catalog_product->getProduct($product_id);
+				$product_shipping = $product_info['product_shippings'];
+				if((json_decode($product_shipping))){
+				    foreach (json_decode($product_shipping) as $shipp){
+				        $shipping[$shipp] = $shipp; 
+				    }
+				}
+			    }
+			    if(isset($shipping)){
+				foreach ($shipping as $key => $ship){
+				    if(isset($data['shipping_methods'][$key])){
+				       $shipping_methods[] = $data['shipping_methods'][$key];
+				    }
+				}
+			    }else{
+				$shipping_methods = array();
+			    }
+			    
+			    $data['shipping_methods'] = $shipping_methods;
+			    $data['heading_shipping'] = $this->language->get('heading_shipping');
 
 			$data['text_address_existing'] = $this->language->get('text_address_existing');
 			$data['text_address_new'] = $this->language->get('text_address_new');
@@ -119,7 +140,34 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 
 			// Setting
 			$data['setting'] = $setting;
+                $data_query = array();
+     $this->load->model('affiliate/affiliate');
+        $data['partner'] = '';
+        foreach ($this->session->data['product_id'] as $prod_id){
+            $product_id = $this->db->query("SELECT product_id FROM " . DB_PREFIX . "cart WHERE cart_id = '" . $prod_id . "'")->row;
+            $product_id = $product_id['product_id'];
             
+            $prod_cats_id = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . $product_id . "'")->rows;
+            
+            foreach ($prod_cats_id as $prod_cat_id) {
+                $aff_centrs_id = $this->db->query("SELECT * FROM " . DB_PREFIX . "affiliate_centr")->rows;  // print_r($aff_centrs_id); exit;
+                foreach ($aff_centrs_id as $aff_centr_id) {
+                    if (in_array($prod_cat_id['category_id'], explode( ',', $aff_centr_id['category']))) {
+                        $data['partner'] = '1';
+                        $data_query[]=array('centr_id' => $aff_centr_id['centr_id']);
+                    }
+                }
+            }
+        }
+        
+      //  $data['city'] = $this->session->data['shipping_address']['city'];
+      if (empty($this->session->data['shipping_address']['city'])) $data['city'] = 'Москва'; else $data['city'] = $this->session->data['shipping_address']['city'];  
+        $data['affiliate_centr'] = $this->model_affiliate_affiliate->getMaps($data_query,$data['city']);
+
+        $data['affiliate_citys'] = $this->model_affiliate_affiliate->getCity();
+        $data['aff_centrs'] = $this->model_affiliate_affiliate->getCityCentrs($data_query,$data['city']);
+      
+
 			return $this->load->view('extension/module/custom/shipping', $data);
 
 		// Блок отключен
@@ -233,6 +281,8 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 						$address = $this->full($result['address']);
 
 						$this->session->data['payment_address'] = $this->full(array());
+						$address['firstname'] = $this->customer->getFirstName();
+						$address['lastname'] = $this->customer->getLastName();
 						$this->session->data['shipping_address'] = $this->addAddress($address);
 					}
 
@@ -424,6 +474,12 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 		} else {
 			$postcode = '';
 		}
+		
+		if (!empty($this->session->data['shipping_address']['city'])) {
+			$city = $this->session->data['shipping_address']['city'];
+		} else {
+			$city = '';
+		}
 
 		foreach ($results as $result) {
 			if ($this->config->get($result['code'] . '_status')) {
@@ -432,7 +488,8 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 				$quote = $this->{'model_extension_shipping_' . $result['code']}->getQuote(array(
 					'country_id' => $country_id,
 					'postcode' => $postcode,
-					'zone_id' => $zone_id
+					'zone_id' => $zone_id,
+					'city' => $city,
 				));
 
 				if ($quote) {
@@ -498,8 +555,13 @@ class ControllerExtensionModuleCustomShipping extends Controller {
 
 		$this->load->model('account/address');
 
-		$address_id = $this->model_account_address->addAddress($this->customer->getId(), $address);
+        $isset_address_id = $this->model_account_address->validateAddress($address);
 
+        if($isset_address_id){
+    		$address_id = $isset_address_id;
+        } else {
+		    $address_id = $this->model_account_address->addAddress($address);
+        }
 		return $this->model_account_address->getAddress($address_id);
 
 	}

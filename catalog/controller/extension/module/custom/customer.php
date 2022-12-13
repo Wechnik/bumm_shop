@@ -30,6 +30,7 @@ class ControllerExtensionModuleCustomcustomer extends Controller {
 			}
 		}
 		$data['customer_group_id'] = $this->config->get('config_customer_group_id');
+	        $data['logged'] = $this->customer->isLogged();
 
 		// Custom Fields
 		$this->load->model('account/custom_field');
@@ -37,30 +38,40 @@ class ControllerExtensionModuleCustomcustomer extends Controller {
 
 		if (isset($this->session->data['guest']['firstname'])) {
 			$data['firstname'] = $this->session->data['guest']['firstname'];
+		} elseif ($data['logged']) {
+		    $data['firstname'] = $this->customer->getFirstName();
 		} else {
 			$data['firstname'] = '';
 		}
 
 		if (isset($this->session->data['guest']['lastname'])) {
 			$data['lastname'] = $this->session->data['guest']['lastname'];
+		} elseif ($data['logged']) {
+		    $data['lastname'] = $this->customer->getLastName();
 		} else {
 			$data['lastname'] = '';
 		}
 
 		if (isset($this->session->data['guest']['telephone'])) {
 			$data['telephone'] = $this->session->data['guest']['telephone'];
+		} elseif ($data['logged']) {
+		    $data['telephone'] = $this->customer->getTelephone();
 		} else {
 			$data['telephone'] = '';
 		}
 
 		if (isset($this->session->data['guest']['email'])) {
 			$data['email'] = $this->session->data['guest']['email'];
+		} elseif ($data['logged']) {
+		    $data['email'] = $this->customer->getEmail();
 		} else {
 			$data['email'] = '';
 		}
 
 		if (isset($this->session->data['guest']['fax'])) {
 			$data['fax'] = $this->session->data['guest']['fax'];
+		} elseif ($data['logged']) {
+		    $data['fax'] = $this->customer->getFax();
 		} else {
 			$data['fax'] = '';
 		}
@@ -102,6 +113,68 @@ class ControllerExtensionModuleCustomcustomer extends Controller {
 		
 		return $this->load->view('extension/module/custom/customer', $data);
 
+	}
+	
+
+	public function updatecustomer(){
+		$json = array();
+
+		$this->load->model('account/customer');
+		$this->load->model('setting/setting');
+
+		// Customer Group
+		$customer_info = $this->model_account_customer->getCustomer($this->customer->getId());
+	    
+		if (isset($this->request->get['firstname'])) {
+			$data['firstname'] = $this->request->get['firstname'];
+		} else {
+			$data['firstname'] = $customer_info['firstname'];
+		}
+		if (isset($this->request->get['email'])) {
+			$data['email'] = $this->request->get['email'];
+		} else {
+			$data['email'] = $customer_info['email'];
+		}
+		if (isset($this->request->get['telephone'])) {
+			$data['telephone'] = $this->request->get['telephone'];
+		} else {
+			$data['telephone'] = $customer_info['telephone'];
+		}
+		
+        $this->model_account_customer->editCustomer($data);
+		/*$setting = $this->model_setting_setting->getSetting('custom');
+		foreach($setting['custom_customer']['fields'] as $field){
+
+			if ( ($field['name'] == 'password' || $field['name'] == 'confirm') ){
+
+				if ($this->session->data['account'] == 'register') {
+					$json[] = array(
+						'name' => str_replace('_', '-', $field['name']),
+						'required' => true
+					);
+				}
+				continue;
+
+			}
+
+			if (isset($field['customer_group']) && in_array($customer_group_id, $field['customer_group'])){
+
+				if (isset($field['required']) && in_array($customer_group_id, $field['required'])){
+					$required = true;
+				} else {
+					$required = false;
+				}
+
+				$json[] = array(
+					'name' => str_replace('_', '-', $field['name']),
+					'required' => $required
+				);
+
+			}
+		}
+*/
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
 	}
 
 	public function update(){

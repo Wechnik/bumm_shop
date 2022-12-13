@@ -12,46 +12,130 @@
       <div id="custom-shipping-methods">
       <?php foreach ($shipping_methods as $shipping_method) { ?>
         <p><strong><?php echo $shipping_method['title']; ?></strong></p>
-        <?php if (!$shipping_method['error']) { ?>
+       <?php if (!$shipping_method['error']) { ?>
           <?php foreach ($shipping_method['quote'] as $quote) { ?>
             <div class="radio">
               <label>
                 <?php if ($quote['code'] == $code || !$code) { ?>
                 <?php $code = $quote['code']; ?>
                 <input type="radio" name="shipping_method" value="<?php echo $quote['code']; ?>" checked="checked" />
+                                <?php } else { ?>
+                                    <input type="radio" name="shipping_method" value="<?php echo $quote['code']; ?>" />
+                                <?php } ?>
+                                <?php echo $quote['title']; ?> - <?php echo $quote['text']; ?>
+                                <?php if (isset($quote['description'])) { ?>
+                                    <br /><small><?php echo $quote['description']; ?></small>
+                                <?php } ?>
+                            </label>
+                        </div>
+                    <?php } ?>
                 <?php } else { ?>
-                <input type="radio" name="shipping_method" value="<?php echo $quote['code']; ?>" />
+                    <div class="alert alert-danger"><?php echo $shipping_method['error']; ?></div>
                 <?php } ?>
-                <?php echo $quote['title']; ?> - <?php echo $quote['text']; ?>
-                <?php if (isset($quote['description'])) { ?>
-                <br /><small><?php echo $quote['description']; ?></small>
-                <?php } ?>
-              </label>
+            <?php } ?>
+        </div>
+        <? if ($partner) { ?>
+            <link rel="stylesheet" href="catalog/view/theme/default/stylesheet/hystmodal.min.css">
+            <script src="catalog/view/javascript/hystmodal.min.js"></script>
+            <div class="buttons" id="custom-control">
+			    <div class="pull-left" id="custom-aff"><input type="checkbox" name="aff_add" value="1">&nbsp;&nbsp; <b>Доставить товар в пункт установки</b>
+			    	&nbsp; &nbsp;
+			        <span class="inputs buttons"><a href="#" type="button" class="button btn-primary button_oc btn" data-hystmodal="#myModal">Где установить</a></span>
+			    </div>
+			    <div class="clearfix"></div>
+			</div>
+            <div class="hystmodal" id="myModal" aria-hidden="true">
+                <div class="hystmodal__wrap">
+                    <div class="hystmodal__window" role="dialog" aria-modal="true">
+                        <button data-hystclose class="hystmodal__close">Закрыть</button>
+                        <script>
+                            ymaps.ready(function () {
+                                mapHandler([55.76, 37.64], mapsArray, true);
+                                myMap.container.fitToViewport();
+                                partners = mapsArray;
+                            });
+                        </script>
+                        <script>
+                            var mapsArray = [
+                                <?php if (empty($affiliate_centr)) { ?>
+                                    {
+                                        geocode: '<?php echo $city; ?>',
+                                        iconCaption: 'Нет установочных центров.'
+                                    }
+                                <?php } else { ?>
+                                    <?php foreach ($affiliate_centr as $affiliate) { ?>
+                                        {
+                                            geocode: '<?php echo $affiliate["geocode"]; ?>',
+                                            header: '<?php echo $affiliate["header"]; ?>',
+                                            body: '<?php echo $affiliate["body"]; ?>',
+                                            footer: '<?php echo $affiliate["footer"]; ?>',
+                                            iconCaption: '<?php echo $affiliate["header"]; ?>',
+                                            city: '<?php echo $affiliate["city"]; ?>',
+                                            street: '<?php echo $affiliate["street"]; ?>',
+                                            centr_id: '<?php echo $affiliate["centr_id"]; ?>'
+                                        },
+                                    <?php } ?>
+                                <?php } ?>
+                            ];
+                        </script>
+                        <script src="catalog/view/javascript/reverse_geocode.js" type="text/javascript"></script>
+                        <style type="text/css">
+                            html, body, #map {
+                                width: 100%;
+                                height: 100%;
+                                margin: 0;
+                                padding: 0;
+                            }
+                            #map {
+                                min-height: 500px;
+                            }
+                        </style>
+                        <div id="map"></div>
+                    </div>
+                </div>
             </div>
-          <?php } ?>
-        <?php } else { ?>
-          <div class="alert alert-danger"><?php echo $shipping_method['error']; ?></div>
-        <?php } ?>
-      <?php } ?>
-      </div>
-
-      <div id="custom-shipping-address">      
-
-        <hr>
-
-        <?php if ($addresses) { ?>
-          <div class="radio">
-            <label>
-              <input type="radio" name="shipping_address" value="existing" checked="checked" />
+            <script type="text/javascript"><!--
+                const myModal = new HystModal({
+                    linkAttributeName: "data-hystmodal",
+                    // настройки (не обязательно), см. API
+                    beforeOpen: function(modal){
+                    //  setTimeout(() => {
+                    //      myMap.container.fitToViewport();
+                    //  }, 500);
+                    },
+                });
+            //--></script>
+            <div id="custom-add"  style="display:none;"> <br>
+                <?php if (empty($aff_centrs)) { ?>
+                    <select name="custom-centr" id="custom-centr" class="form-control">
+                        <option value="0">Нет партнеров</option>
+                    </select>
+                <? } else { ?>
+                    <select name="custom-centr" id="custom-centr" class="form-control">
+                        <option value="0">Выбрать установочный центр</option>
+                        <?php foreach ($aff_centrs as $affiliat) { ?>
+                            <option value="<?php echo $affiliat['centr_id']; ?>"><?php echo $affiliat['adres']; ?></option>
+                        <? } ?>
+                    </select>
+                <? } ?>
+            </div>
+        <?  } ?>
+        <p></p>
+        <div id="custom-shipping-address">      
+            <hr>
+            <?php if ($addresses) { ?>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="shipping_address" value="existing" checked="checked" />
               <?php echo $text_address_existing; ?></label>
           </div>
           <div id="shipping-existing">
             <select name="address_id" class="form-control">
               <?php foreach ($addresses as $address) { ?>
               <?php if ($address['address_id'] == $address_id) { ?>
-              <option value="<?php echo $address['address_id']; ?>" selected="selected"><?php echo $address['firstname']; ?> <?php echo $address['lastname']; ?>, <?php echo $address['address_1']; ?>, <?php echo $address['city']; ?>, <?php echo $address['zone']; ?>, <?php echo $address['country']; ?></option>
+              <option value="<?php echo $address['address_id']; ?>" selected="selected"><?php if($address['address_1'] != ''){ ?><?php echo $address['address_1']; ?><?php }?><?php if($address['city'] != ''){ ?>, <?php echo $address['city']; ?><?php } ?><?php if($address['zone'] != ''){ ?>, <?php echo $address['zone']; ?><?php } ?><?php if($address['country'] != ''){ ?>, <?php echo $address['country']; ?><?php } ?></option>
               <?php } else { ?>
-              <option value="<?php echo $address['address_id']; ?>"><?php echo $address['firstname']; ?> <?php echo $address['lastname']; ?>, <?php echo $address['address_1']; ?>, <?php echo $address['city']; ?>, <?php echo $address['zone']; ?>, <?php echo $address['country']; ?></option>
+              <option value="<?php echo $address['address_id']; ?>"><?php if($address['address_1'] != ''){ ?><?php echo $address['address_1']; ?><?php }?><?php if($address['city'] != ''){ ?>, <?php echo $address['city']; ?><?php } ?><?php if($address['zone'] != ''){ ?>, <?php echo $address['zone']; ?><?php } ?><?php if($address['country'] != ''){ ?>, <?php echo $address['country']; ?><?php } ?></option>
               <?php } ?>
               <?php } ?>
             </select>
@@ -68,14 +152,14 @@
         <div id="shipping-new" style="display: <?php echo ($addresses ? 'none' : 'block'); ?>;">
 
           <?php foreach ($setting['fields'] as $field) { ?>
-
-            <?php if ($field['name'] === 'company') { ?>
+            <input type="hidden" name="company" value="" placeholder="<?php echo $entry_company; ?>" id="input-shipping-company" class="form-control" />
+            <?php /* if ($field['name'] === 'company') { ?>
               <div class="form-group" id="shipping-field-company">
                 <label class="control-label" for="input-shipping-company"><?php echo $entry_company; ?></label>
                 <input type="text" name="company" value="<?= $company; ?>" placeholder="<?php echo $entry_company; ?>" id="input-shipping-company" class="form-control" />
               </div>
               <?php continue; ?>
-            <?php } ?>
+            <?php } */ ?>
 
             <?php if ($field['name'] === 'address_1') { ?>
               <div class="form-group" id="shipping-field-address-1">
@@ -245,6 +329,26 @@
 </div>
 
 <script><!--
+$('input[name="aff_add"]').on('change', function() {
+    if($(this).prop('checked')){
+        $('#custom-shipping-address').css('display','none');
+        $('#custom-add').css('display','block');
+    } else {
+        $('#custom-shipping-address').css('display','block');
+        $('#custom-add').css('display','none');
+    }
+});
+
+$('select[name="custom-centr"]').on('change', function(){
+    $('#custom-shipping-address input[name="address_1"]').val($(this).find('option:selected').text());
+    $('#custom-shipping-address input[name="shipping_address"]').each(function(){
+        if($(this).val() == 'new'){
+            $(this).prop("checked", true);
+        } else{
+            $(this).prop("checked", false);
+        }
+    });
+});
 $('#custom-shipping [name^=shipping]').on('input', function() {
   $(this).parent().find('.text-danger').remove();
   $(this).parent().removeClass('has-error');

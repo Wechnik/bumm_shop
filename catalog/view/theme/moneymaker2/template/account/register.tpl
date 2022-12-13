@@ -22,7 +22,7 @@
       <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" class="form-horizontal">
         <fieldset id="account">
           <legend><?php echo $text_your_details; ?></legend>
-          <div class="form-group required" style="display: <?php echo (count($customer_groups) > 1 ? 'block' : 'none'); ?>;">
+          <!-- <div class="form-group required" style="display: <?php echo (count($customer_groups) > 1 ? 'block' : 'none'); ?>;">
             <label class="col-sm-2 control-label"><?php echo $entry_customer_group; ?></label>
             <div class="col-sm-10">
               <?php foreach ($customer_groups as $customer_group) { ?>
@@ -68,17 +68,28 @@
               <div class="text-danger"><?php echo $error_email; ?></div>
               <?php } ?>
             </div>
-          </div>
+          </div>-->
           <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-telephone"><?php echo $entry_telephone; ?></label>
             <div class="col-sm-10">
               <input type="tel" name="telephone" value="<?php echo $telephone; ?>" placeholder="<?php echo $entry_telephone; ?>" id="input-telephone" class="form-control" />
+              <input type="hidden" name="firstname" value=""  id="input-firstname" class="form-control" />
+              <input type="hidden" name="lastname" value="" id="input-lastname" class="form-control" />
+              <input type="hidden" name="email" value=""  id="input-email" class="form-control" />
+              <input type="hidden" name="fax" value="" id="input-fax" class="form-control" />
+              <input type="hidden" name="company" value=""  id="input-company" class="form-control" />
+              <input type="hidden" name="address_1" value="" id="input-address_1" class="form-control" />
+              <input type="hidden" name="address_2" value=""  id="input-address_2" class="form-control" />
+              <input type="hidden" name="city" value="" id="input-city" class="form-control" />
+              <input type="hidden" name="postcode" value=""  id="input-postcode" class="form-control" />
+              <input type="hidden" name="country_id" value="" id="input-country_id" class="form-control" />
+              <input type="hidden" name="zone_id" value=""  id="input-zone_id" class="form-control" />
               <?php if ($error_telephone) { ?>
               <div class="text-danger"><?php echo $error_telephone; ?></div>
               <?php } ?>
             </div>
           </div>
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label class="col-sm-2 control-label" for="input-fax"><?php echo $entry_fax; ?></label>
             <div class="col-sm-10">
               <input type="text" name="fax" value="<?php echo $fax; ?>" placeholder="<?php echo $entry_fax; ?>" id="input-fax" class="form-control" />
@@ -236,9 +247,9 @@
           </div>
           <?php } ?>
           <?php } ?>
-          <?php } ?>
+          <?php } ?> -->
         </fieldset>
-        <fieldset id="address">
+        <!-- <fieldset id="address">
           <legend><?php echo $text_your_address; ?></legend>
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-company"><?php echo $entry_company; ?></label>
@@ -460,7 +471,7 @@
           <?php } ?>
           <?php } ?>
           <?php } ?>
-        </fieldset>
+        </fieldset>-->
         <fieldset>
           <legend><?php echo $text_your_password; ?></legend>
           <div class="form-group required">
@@ -482,7 +493,7 @@
             </div>
           </div>
         </fieldset>
-        <fieldset>
+        <!-- <fieldset>
           <legend><?php echo $text_newsletter; ?></legend>
           <div class="form-group">
             <label class="col-sm-2 control-label"><?php echo $entry_newsletter; ?></label>
@@ -504,7 +515,7 @@
               <?php } ?>
             </div>
           </div>
-        </fieldset>
+        </fieldset> -->
         <?php echo $captcha; ?>
         <?php if ($text_agree) { ?>
         <div class="buttons">

@@ -2,6 +2,12 @@
 class ControllerCheckoutCustom extends Controller {
 	public function index() {
 
+		if (!empty($this->request->post['product_id']) and empty($this->session->data['product_id'])) {
+			$this->session->data['product_id']=$this->request->post['product_id'];
+		}
+ 		if (empty($this->session->data['product_id'])) {
+        		$this->response->redirect($this->url->link('checkout/cart', '', true));
+      		}
 		$this->document->addScript('catalog/view/javascript/custom/checkout.js');
 		$this->document->addStyle('catalog/view/javascript/custom/stylesheet.css');
 

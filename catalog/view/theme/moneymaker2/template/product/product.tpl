@@ -9,10 +9,6 @@ if ($IfModifiedSince && $IfModifiedSince >= $LastModified_unix)
 header($_SERVER['SERVER_PROTOCOL'] . ' 304 Not Modified');
 exit;} header('Last-Modified: '. $LastModified); ?>
 <?php echo $header; ?>
-
-<link rel="stylesheet" href="catalog/view/theme/default/stylesheet/hystmodal.min.css">
-<script src="catalog/view/javascript/hystmodal.min.js"></script>
-  
 <link rel="stylesheet" href="catalog/view/theme/default/stylesheet/hystmodal.min.css">
 <script src="catalog/view/javascript/hystmodal.min.js"></script>
 <div class="container product-page">
@@ -189,31 +185,6 @@ exit;} header('Last-Modified: '. $LastModified); ?>
 						<meta itemprop="priceCurrency" content="<?php echo $moneymaker2_currency; ?>" />
 						<meta itemprop="price" content="<?php echo rtrim(preg_replace("/[^0-9\.]/", "", ($special ? $special : $price)), '.'); ?>" />
 						<link itemprop = "availability" href = "https://schema.org/<?php echo ($quantity>0 ? "InStock" : "OutOfStock") ?>" />
-<?php if(!empty($seller_detail)) { ?>
-			    <?php if($purpletree_multivendor_hide_seller_detail != 1) { ?>
-				<li style="list-style: none;" ><?php echo $text_seller_label; ?> <a href="<?php echo $seller_detail['seller_href']; ?>"><?php echo $seller_detail['seller_name']; ?></a></li>
-				<?php if($seller_review_status) { ?>
-				<li style="list-style: none;"><?php if ($seller_detail['seller_rating']) { ?>
-				<div class="rating"  style="display: contents;">&nbsp;&nbsp;
-					<?php echo $text_seller_rating; ?>&nbsp;&nbsp;
-					  <?php for ($i = 1; $i <= 5; $i++) { ?>
-					  <?php if ($seller_detail['seller_rating'] < $i) { ?>
-					  <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
-					  <?php } else { ?>
-					  <span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i></span>
-					  <?php } ?>
-					  <?php } ?> <a href="<?php echo $seller_detail['seller_review_link']; ?>" id = "pts_srating"><?php echo $seller_detail['seller_count'];?> <?php echo $text_seller_review; ?></a>
-					</div>
-					<?php } else { ?>
-					<div class="rating"  style="display: contents;"><?php echo $text_seller_rating; ?>&nbsp;&nbsp;
-						<?php for ($i = 1; $i <= 5; $i++) { ?>
-							<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
-						<?php } ?>
-						<a href="<?php echo $seller_detail['seller_review_link']; ?>" id = "pts_srating"><?php echo $seller_detail['seller_count'];?> <?php echo $text_seller_review; ?></a></div>
-					<?php } ?></li>
-				<?php } ?>
-				<li style="list-style: none;"><a href="<?php echo $seller_detail['seller_contact_link']; ?>"><?php echo $text_seller_contact; ?></a></li>
-			<?php } } ?>
 						<?php if ($reward) { ?>
 						<div class="text-left"><small><?php echo $text_reward; ?> <span class="text-muted"><?php echo $reward; ?></span></small></div>
 						<hr>
@@ -365,10 +336,7 @@ exit;} header('Last-Modified: '. $LastModified); ?>
 						<?php } ?>
 						<div class="btn-group">
 						  <?php if (!$moneymaker2_common_buy_hide) { ?>
- <?php if ($template_product_status == 1) { ?>
-				<?php } else { ?>	
 						  <button type="button" data-info-title="<?php echo $button_cart; ?>" id="button-cart" class="<?php echo $addtocart_class; ?>" data-toggle="tooltip" data-html="true" data-placement="bottom" title="<?php echo $addtocart_tooltip; ?>"><i class="fa fa-fw fa-shopping-cart"></i> <?php if (!$moneymaker2_common_price_detached) { ?><?php if ($price&&$special) { ?><?php echo $special; ?><?php } else if ($price) { ?>                <?php echo $price;  ?>                  <?php if (isset($currency_plus_show_base_price) and $currency_plus_show_base_price > 0 and isset($base_price) and !empty($base_price)) { ?> 					(<?php echo $base_price; ?>)                 <?php } ?><?php } ?><?php } else { ?><?php echo $button_cart; ?><?php } ?></button>
-<?php } ?>
 						  <?php } ?>
 						</div>
 						<?php if ($moneymaker2_modules_quickorder_enabled) { ?>
@@ -1500,11 +1468,4 @@ const myModal = new HystModal({
         });
     });
 </script>
-
-<?php if($seller_detail) { ?>
-<?php if($purpletree_multivendor_allow_live_chat) { ?>
-<?php if($store_live_chat_enable) { ?>
-<?php if($store_live_chat_code != '') { ?>
-<?php  echo $store_live_chat_code; ?>
-<?php } } } } ?>
 <?php echo $footer; ?>

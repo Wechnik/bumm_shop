@@ -94,14 +94,11 @@
 			/*mmr*/
 			
 			$data['products'] = array();
-/*Product and cart modification */
 			$this->load->model('catalog/product');
 			$data['shippings'] = array();
-/*Product and cart modification */				
+			
 			foreach ($this->cart->getProducts() as $product) {
-/*Product and cart modification */
 			    $product_info = $this->model_catalog_product->getProduct($product['product_id']);
-/*Product and cart modification */			    
 				if ($product['image']) {
 					$image = $this->model_tool_image->resize($product['image'], $this->config->get($this->config->get('config_theme') . '_image_cart_width'), $this->config->get($this->config->get('config_theme') . '_image_cart_height'));
 				} else {
@@ -140,7 +137,7 @@
 					$price = false;
 					$total = false;
 				}
-/*Product and cart modification */				
+				
 				$shippings = json_decode($product_info['product_shippings']);
 				if(is_null($shippings)){
     				$data['shippings']['none'] = 'Нет доставки';
@@ -212,7 +209,6 @@
 					'total'     => $total,
 					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
 				);*/
-/*Product and cart modification */
 			}
 			
 			// Gift Voucher
@@ -350,16 +346,13 @@
 			/*mmr*/
 			
 			$data['products1'] = array();
-/*Product and cart modification */
 			$data['shippings'] = array();
 			
 			$this->load->model('catalog/product');
-/*Product and cart modification */			
-
+			
 			foreach ($this->cart->getProducts() as $product) {
-/*Product and cart modification */
 			    $product_info = $this->model_catalog_product->getProduct($product['product_id']);
-/*Product and cart modification */			    
+			    
 				if ($product['image']) {
 					$image = $this->model_tool_image->resize($product['image'], $this->config->get($this->config->get('config_theme') . '_image_cart_width'), $this->config->get($this->config->get('config_theme') . '_image_cart_height'));
 				} else {
@@ -399,7 +392,6 @@
 					$total = false;
 				}
 				
-/*Product and cart modification */
 				$shippings = json_decode($product_info['product_shippings']);
 				if(is_null($shippings)){
     			
@@ -441,10 +433,10 @@
 				    foreach ($shippings as $shipping){
 				        $this->load->language('extension/shipping/' . $shipping);
 				        $shipp .= '+' . $shipping;  
-				        $shipp_text .= $this->language->get('text_title') . ', ';
+				        $shipp_text .= ' ' . $this->language->get('text_title') . ',';
 				    }
 				    
-			        $data['shippings'][$shipp] = $shipp_text;
+			        $data['shippings'][$shipp] =  substr( $shipp_text, 0, -1);
 				    $data['products1'][$shipp][] = array(
     					'cart_id'   => $product['cart_id'],
     					'thumb'     => $image,
@@ -471,7 +463,6 @@
 					'total'     => $total,
 					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
 				);*/
-/*Product and cart modification */
 			}
 			
 			// Gift Voucher

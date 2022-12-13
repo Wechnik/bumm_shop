@@ -25,7 +25,7 @@ class ControllerAccountLogin extends Controller {
 
 			$customer_info = $this->model_account_customer->getCustomerByToken($this->request->get['token']);
 
-			if ($customer_info && $this->customer->login($customer_info['email'], '', true)) {
+			if ($customer_info && $this->customer->login($customer_info['telephone'], '', true)) {
 				// Default Addresses
 				$this->load->model('account/address');
 
@@ -121,7 +121,7 @@ class ControllerAccountLogin extends Controller {
 		$data['text_i_am_returning_customer'] = $this->language->get('text_i_am_returning_customer');
 		$data['text_forgotten'] = $this->language->get('text_forgotten');
 
-		$data['entry_email'] = $this->language->get('entry_email');
+		$data['entry_telephone'] = $this->language->get('entry_telephone');
 		$data['entry_password'] = $this->language->get('entry_password');
 
 		$data['button_continue'] = $this->language->get('button_continue');
@@ -160,10 +160,10 @@ class ControllerAccountLogin extends Controller {
 			$data['success'] = '';
 		}
 
-		if (isset($this->request->post['email'])) {
-			$data['email'] = $this->request->post['email'];
+		if (isset($this->request->post['telephone'])) {
+			$data['telephone'] = $this->request->post['telephone'];
 		} else {
-			$data['email'] = '';
+			$data['telephone'] = '';
 		}
 
 		if (isset($this->request->post['password'])) {
@@ -184,26 +184,26 @@ class ControllerAccountLogin extends Controller {
 
 	protected function validate() {
 		// Check how many login attempts have been made.
-		$login_info = $this->model_account_customer->getLoginAttempts($this->request->post['email']);
+		$login_info = $this->model_account_customer->getLoginAttempts($this->request->post['telephone']);
 
 		if ($login_info && ($login_info['total'] >= $this->config->get('config_login_attempts')) && strtotime('-1 hour') < strtotime($login_info['date_modified'])) {
 			$this->error['warning'] = $this->language->get('error_attempts');
 		}
 
 		// Check if customer has been approved.
-		$customer_info = $this->model_account_customer->getCustomerByEmail($this->request->post['email']);
+		$customer_info = $this->model_account_customer->getCustomerByTelephone($this->request->post['telephone']);
 
 		if ($customer_info && !$customer_info['approved']) {
 			$this->error['warning'] = $this->language->get('error_approved');
 		}
 
 		if (!$this->error) {
-			if (!$this->customer->login($this->request->post['email'], $this->request->post['password'])) {
+			if (!$this->customer->login($this->request->post['telephone'], $this->request->post['password'])) {
 				$this->error['warning'] = $this->language->get('error_login');
 
-				$this->model_account_customer->addLoginAttempt($this->request->post['email']);
+				$this->model_account_customer->addLoginAttempt($this->request->post['telephone']);
 			} else {
-				$this->model_account_customer->deleteLoginAttempts($this->request->post['email']);
+				$this->model_account_customer->deleteLoginAttempts($this->request->post['telephone']);
 			}
 		}
 
