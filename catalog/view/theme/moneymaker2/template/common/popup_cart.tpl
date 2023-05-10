@@ -3,26 +3,31 @@
 <?php if ($products1 || $vouchers1) { ?>
     <li>
       <table class="table">
-        <?php foreach ($products1 as $product) { ?>
-        <tr>
-          <td class="text-center" style="width: 25%;"><?php if ($product['thumb']) { ?>
-            <a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" class="img-thumbnail" /></a>
-            <?php } ?></td>
-          <td class="text-left"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
-            <?php if ($product['option']) { ?>
-            <?php foreach ($product['option'] as $option) { ?>
-            <br />
-            - <small><?php echo $option['name']; ?> <?php echo $option['value']; ?></small>
+        <?php foreach ($products1 as $key => $shipps) { ?>
+            <tr>
+                <td colspan=5><?php echo $shippings[$key]; ?></td>
+            </tr>
+            <?php foreach($shipps as $product){ ?>    
+                <tr>
+                  <td class="text-center" style="width: 25%;"><?php if ($product['thumb']) { ?>
+                    <a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" class="img-thumbnail" /></a>
+                    <?php } ?></td>
+                  <td class="text-left"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
+                    <?php if ($product['option']) { ?>
+                    <?php foreach ($product['option'] as $option) { ?>
+                    <br />
+                    - <small><?php echo $option['name']; ?> <?php echo $option['value']; ?></small>
+                    <?php } ?>
+                    <?php } ?>
+                    <?php if ($product['recurring']) { ?>
+                    <br />
+                    - <small><?php echo $text_recurring; ?> <?php echo $product['recurring']; ?></small>
+                    <?php } ?></td>
+                  <td class="text-right">x&nbsp;<?php echo $product['quantity']; ?></td>
+                  <td class="text-right text-nowrap"><?php echo $product['total']; ?></td>
+                  <td class="text-center"><a href="javascript:void(0);" onclick="cart.remove('<?php echo $product['cart_id']; ?>');" title="<?php echo $button_remove; ?>" class="text-muted"><i class="fa fa-lg fa-times-circle"></i></a></td>
+                </tr>
             <?php } ?>
-            <?php } ?>
-            <?php if ($product['recurring']) { ?>
-            <br />
-            - <small><?php echo $text_recurring; ?> <?php echo $product['recurring']; ?></small>
-            <?php } ?></td>
-          <td class="text-right">x&nbsp;<?php echo $product['quantity']; ?></td>
-          <td class="text-right text-nowrap"><?php echo $product['total']; ?></td>
-          <td class="text-center"><a href="javascript:void(0);" onclick="cart.remove('<?php echo $product['cart_id']; ?>');" title="<?php echo $button_remove; ?>" class="text-muted"><i class="fa fa-lg fa-times-circle"></i></a></td>
-        </tr>
         <?php } ?>
         <?php foreach ($vouchers1 as $voucher) { ?>
         <tr>

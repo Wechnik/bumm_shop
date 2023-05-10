@@ -47,7 +47,7 @@
                         <li><a href="#tab-design" data-toggle="tab"><?php echo $tab_design; ?></a></li>
                         <li><a href="#tab-smart-filter" data-toggle="tab">Опции фильтра</a></li>
                         <li><a href="#tab-product-tab" data-toggle="tab"><?php echo $tab_product_tab; ?></a></li>
-	                    <li><a href="#tab-related-options" data-toggle="tab">Связанные опции</a></li>
+                        <li><a href="#tab-related-options" data-toggle="tab">Связанные опции</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab-general">
@@ -792,7 +792,38 @@
                                     <a onclick="$(this).parent().find(':checkbox').prop('checked', false);"><?php echo $text_unselect_all; ?></a>
                                 </div>
                             </div>
-
+<?php /*Product and cart modification*/?>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-product_shipping">Транспортная компания</label>
+                                <div class="col-sm-10">
+                                    <div class="well well-sm" style="min-height: 150px;max-height: 300px;overflow: auto;">
+                                        <table class="table table-striped">
+                                            <?php foreach ($product_shippings as $product_shipping) { ?>
+                                                <tr>
+                                                    <td class="checkbox">
+                                                        <label>
+                                                            <?php if (in_array($product_shipping['code'], $current_product_shippings)) { ?>
+                                                                <input type="checkbox" name="product_shipping[]"
+                                                                       value="<?php echo $product_shipping['code']; ?>"
+                                                                       checked="checked"/>
+                                                                <?php echo $product_shipping['title']; ?>
+                                                            <?php } else { ?>
+                                                                <input type="checkbox" name="product_shipping[]"
+                                                                       value="<?php echo $product_shipping['code']; ?>"/>
+                                                                <?php echo $product_shipping['title']; ?>
+                                                            <?php } ?>
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
+                                        </table>
+                                    </div>
+                                    <a onclick="$(this).parent().find(':checkbox').prop('checked', true);"><?php echo $text_select_all; ?></a>
+                                    /
+                                    <a onclick="$(this).parent().find(':checkbox').prop('checked', false);"><?php echo $text_unselect_all; ?></a>
+                                </div>
+                            </div>
+<?php /*Product and cart modification*/?>
                         </div>
                         <?php echo $hpm_tab; ?>
                         <div class="tab-pane" id="tab-attribute">
@@ -1460,40 +1491,40 @@
                                 <table class="table table-striped table-bordered table-hover">
                                     <thead>
                                     <tr>
-	                                    <td class="text-left"><?php echo $entry_image; ?></td>
+                                        <td class="text-left"><?php echo $entry_image; ?></td>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr>
                                         <td class="text-left">
-	                                        <a href="" id="thumb-image" data-toggle="image" class="img-thumbnail">
-		                                        <img src="<?php echo $thumb; ?>" />
-	                                        </a>
-	                                        <input type="hidden" name="image" value="<?php echo $image; ?>" id="input-image"/>
+                                            <a href="" id="thumb-image" data-toggle="image" class="img-thumbnail">
+                                                <img src="<?php echo $thumb; ?>" />
+                                            </a>
+                                            <input type="hidden" name="image" value="<?php echo $image; ?>" id="input-image"/>
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
-	                        <div class="table-responsive">
-		                        <table class="table table-striped table-bordered table-hover">
-			                        <thead>
-			                        <tr>
-				                        <td class="text-left">Превью товара</td>
-			                        </tr>
-			                        </thead>
-			                        <tbody>
-			                        <tr>
-				                        <td class="text-left">
-					                        <a href="" id="preview-image" data-toggle="image" class="img-thumbnail">
-						                        <img src="<?php echo $thumb_preview; ?>" />
-					                        </a>
-					                        <input type="hidden" name="preview" value="<?php echo $preview; ?>" id="input-preview"/>
-				                        </td>
-			                        </tr>
-			                        </tbody>
-		                        </table>
-	                        </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <td class="text-left">Превью товара</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-left">
+                                            <a href="" id="preview-image" data-toggle="image" class="img-thumbnail">
+                                                <img src="<?php echo $thumb_preview; ?>" />
+                                            </a>
+                                            <input type="hidden" name="preview" value="<?php echo $preview; ?>" id="input-preview"/>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <div class="table-responsive">
                                 <table id="images" class="table table-striped table-bordered table-hover">
                                     <thead>
@@ -1889,20 +1920,20 @@
                                 </div>
                             </div>
                         </div>
-	                    <div class="tab-pane" id="tab-related-options">
-		
-		                    <div class="form-group">
-			                    <label class="col-sm-2 control-label"
-			                           for="input-product_options_text">Текст опций, при первой загрузке </label>
-			                    <div class="col-sm-10">
+                        <div class="tab-pane" id="tab-related-options">
+        
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"
+                                       for="input-product_options_text">Текст опций, при первой загрузке </label>
+                                <div class="col-sm-10">
                                                 <textarea
-		                                                name="product_options_text"
-		                                                rows="5" placeholder="Текст опций, при первой загрузке"
-		                                                id="input-product_options_text"
-		                                                class="form-control"><?php echo isset($product_options_text) ? $product_options_text : ''; ?></textarea>
-			                    </div>
-		                    </div>
-	                    </div>
+                                                        name="product_options_text"
+                                                        rows="5" placeholder="Текст опций, при первой загрузке"
+                                                        id="input-product_options_text"
+                                                        class="form-control"><?php echo isset($product_options_text) ? $product_options_text : ''; ?></textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -1984,7 +2015,7 @@
     </script>
     <!-- SEO URL Generator.End -->
     <script type="text/javascript"><!--
-	    ckeditorInit('input-product_options_text', getURLVar('token'));
+        ckeditorInit('input-product_options_text', getURLVar('token'));
         <?php if ($ckeditor) { ?>
         <?php foreach ($languages as $language) { ?>
         ckeditorInit('input-description<?php echo $language['language_id']; ?>', getURLVar('token'));
@@ -2324,65 +2355,65 @@
             },
             'select': function (item) {
                 html = '<div class="tab-pane" id="tab-option' + option_row + '">';
-                html += '	<input type="hidden" name="product_option[' + option_row + '][product_option_id]" value="" />';
-                html += '	<input type="hidden" name="product_option[' + option_row + '][name]" value="' + item['label'] + '" />';
-                html += '	<input type="hidden" name="product_option[' + option_row + '][option_id]" value="' + item['value'] + '" />';
-                html += '	<input type="hidden" name="product_option[' + option_row + '][type]" value="' + item['type'] + '" />';
+                html += '   <input type="hidden" name="product_option[' + option_row + '][product_option_id]" value="" />';
+                html += '   <input type="hidden" name="product_option[' + option_row + '][name]" value="' + item['label'] + '" />';
+                html += '   <input type="hidden" name="product_option[' + option_row + '][option_id]" value="' + item['value'] + '" />';
+                html += '   <input type="hidden" name="product_option[' + option_row + '][type]" value="' + item['type'] + '" />';
 
-                html += '	<div class="form-group">';
-                html += '	  <label class="col-sm-2 control-label" for="input-required' + option_row + '"><?php echo $entry_required; ?></label>';
-                html += '	  <div class="col-sm-10"><select name="product_option[' + option_row + '][required]" id="input-required' + option_row + '" class="form-control">';
-                html += '	      <option value="1"><?php echo $text_yes; ?></option>';
-                html += '	      <option value="0"><?php echo $text_no; ?></option>';
-                html += '	  </select></div>';
-                html += '	</div>';
+                html += '   <div class="form-group">';
+                html += '     <label class="col-sm-2 control-label" for="input-required' + option_row + '"><?php echo $entry_required; ?></label>';
+                html += '     <div class="col-sm-10"><select name="product_option[' + option_row + '][required]" id="input-required' + option_row + '" class="form-control">';
+                html += '         <option value="1"><?php echo $text_yes; ?></option>';
+                html += '         <option value="0"><?php echo $text_no; ?></option>';
+                html += '     </select></div>';
+                html += '   </div>';
 
                 if (item['type'] == 'text') {
-                    html += '	<div class="form-group">';
-                    html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
-                    html += '	  <div class="col-sm-10"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="<?php echo $entry_option_value; ?>" id="input-value' + option_row + '" class="form-control" /></div>';
-                    html += '	</div>';
+                    html += '   <div class="form-group">';
+                    html += '     <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
+                    html += '     <div class="col-sm-10"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="<?php echo $entry_option_value; ?>" id="input-value' + option_row + '" class="form-control" /></div>';
+                    html += '   </div>';
                 }
 
                 if (item['type'] == 'textarea') {
-                    html += '	<div class="form-group">';
-                    html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
-                    html += '	  <div class="col-sm-10"><textarea name="product_option[' + option_row + '][value]" rows="5" placeholder="<?php echo $entry_option_value; ?>" id="input-value' + option_row + '" class="form-control"></textarea></div>';
-                    html += '	</div>';
+                    html += '   <div class="form-group">';
+                    html += '     <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
+                    html += '     <div class="col-sm-10"><textarea name="product_option[' + option_row + '][value]" rows="5" placeholder="<?php echo $entry_option_value; ?>" id="input-value' + option_row + '" class="form-control"></textarea></div>';
+                    html += '   </div>';
                 }
 
                 if (item['type'] == 'file') {
-                    html += '	<div class="form-group" style="display: none;">';
-                    html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
-                    html += '	  <div class="col-sm-10"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="<?php echo $entry_option_value; ?>" id="input-value' + option_row + '" class="form-control" /></div>';
-                    html += '	</div>';
+                    html += '   <div class="form-group" style="display: none;">';
+                    html += '     <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
+                    html += '     <div class="col-sm-10"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="<?php echo $entry_option_value; ?>" id="input-value' + option_row + '" class="form-control" /></div>';
+                    html += '   </div>';
                 }
 
                 if (item['type'] == 'date') {
-                    html += '	<div class="form-group">';
-                    html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
-                    html += '	  <div class="col-sm-3"><div class="input-group date"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="<?php echo $entry_option_value; ?>" data-date-format="YYYY-MM-DD" id="input-value' + option_row + '" class="form-control" /><span class="input-group-btn"><button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button></span></div></div>';
-                    html += '	</div>';
+                    html += '   <div class="form-group">';
+                    html += '     <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
+                    html += '     <div class="col-sm-3"><div class="input-group date"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="<?php echo $entry_option_value; ?>" data-date-format="YYYY-MM-DD" id="input-value' + option_row + '" class="form-control" /><span class="input-group-btn"><button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button></span></div></div>';
+                    html += '   </div>';
                 }
 
                 if (item['type'] == 'time') {
-                    html += '	<div class="form-group">';
-                    html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
-                    html += '	  <div class="col-sm-10"><div class="input-group time"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="<?php echo $entry_option_value; ?>" data-date-format="HH:mm" id="input-value' + option_row + '" class="form-control" /><span class="input-group-btn"><button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button></span></div></div>';
-                    html += '	</div>';
+                    html += '   <div class="form-group">';
+                    html += '     <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
+                    html += '     <div class="col-sm-10"><div class="input-group time"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="<?php echo $entry_option_value; ?>" data-date-format="HH:mm" id="input-value' + option_row + '" class="form-control" /><span class="input-group-btn"><button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button></span></div></div>';
+                    html += '   </div>';
                 }
 
                 if (item['type'] == 'datetime') {
-                    html += '	<div class="form-group">';
-                    html += '	  <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
-                    html += '	  <div class="col-sm-10"><div class="input-group datetime"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="<?php echo $entry_option_value; ?>" data-date-format="YYYY-MM-DD HH:mm" id="input-value' + option_row + '" class="form-control" /><span class="input-group-btn"><button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button></span></div></div>';
-                    html += '	</div>';
+                    html += '   <div class="form-group">';
+                    html += '     <label class="col-sm-2 control-label" for="input-value' + option_row + '"><?php echo $entry_option_value; ?></label>';
+                    html += '     <div class="col-sm-10"><div class="input-group datetime"><input type="text" name="product_option[' + option_row + '][value]" value="" placeholder="<?php echo $entry_option_value; ?>" data-date-format="YYYY-MM-DD HH:mm" id="input-value' + option_row + '" class="form-control" /><span class="input-group-btn"><button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button></span></div></div>';
+                    html += '   </div>';
                 }
 
                 if (item['type'] == 'select' || item['type'] == 'radio' || item['type'] == 'checkbox' || item['type'] == 'image' || item['type'] == 'picture' || item['type'] == 'text') {
                     html += '<div class="table-responsive">';
                     html += '  <table id="option-value' + option_row + '" class="table table-striped table-bordered table-hover">';
-                    html += '  	 <thead>';
+                    html += '    <thead>';
                     html += '      <tr>';
                     html += '        <td class="text-left" style="width: 200px;"><?php echo $entry_option_value; ?></td>';
                     html += '        <td class="text-right" style="width: 150px;"><?php echo $entry_price . ' / ' . $entry_base_price; ?></td>';
@@ -2390,8 +2421,8 @@
                     html += '        <td class="text-right">Описание опции:</td>';
                     html += '        <td></td>';
                     html += '      </tr>';
-                    html += '  	 </thead>';
-                    html += '  	 <tbody>';
+                    html += '    </thead>';
+                    html += '    <tbody>';
                     html += '    </tbody>';
                     html += '    <tfoot>';
                     html += '      <tr>';

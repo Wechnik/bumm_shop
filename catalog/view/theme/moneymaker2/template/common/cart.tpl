@@ -1,5 +1,5 @@
 <li class="modal-cart hidden-xs" id="cart">
-	<a href="#"><i class="fa fa-fw fa-shopping-cart"></i>
+	<a href="javascript:;"><i class="fa fa-fw fa-shopping-cart"></i>
 		<?php if($count_cart_products != 0) { ?>
 			<small class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><span class="fa-stack-1x"><?php echo $text_items_count; ?></span></small>
 		<?php } ?>
