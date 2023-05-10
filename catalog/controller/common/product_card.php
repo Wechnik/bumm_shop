@@ -125,6 +125,7 @@ class ControllerCommonProductCard extends Controller {
         }
 
         if ($this->customer->isLogged()) {
+            $wishlist_id = false;
             $wishlist = $this->model_account_wishlist->getWishlist();
             foreach ($wishlist as $key => $value) {
                 $wishlist_id[] = $value['product_id'];

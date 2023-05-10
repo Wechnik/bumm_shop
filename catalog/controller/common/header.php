@@ -166,7 +166,7 @@ class ControllerCommonHeader extends Controller {
 		} else {
 			$data['class'] = 'common-home';
 		}
-
+		$data['go_cart'] =$this->url->link('checkout/cart', '', true); 
 		return $this->load->view('common/header', $data);
 	}
 }

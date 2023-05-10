@@ -24,7 +24,8 @@ class ControllerExtensionModuleCustomTotal extends Controller {
         $data_query = array();
      $this->load->model('affiliate/affiliate');
         $data['partner'] = '';
-    $prod_cats_id = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . $this->session->data['product_id'] . "'")->rows;
+        foreach ($this->session->data['product_id'] as $product_id){
+    $prod_cats_id = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . $product_id . "'")->rows;
       foreach ($prod_cats_id as $prod_cat_id) {
         $aff_centrs_id = $this->db->query("SELECT * FROM " . DB_PREFIX . "affiliate_centr")->rows;  // print_r($aff_centrs_id); exit;
          foreach ($aff_centrs_id as $aff_centr_id) {
@@ -33,6 +34,7 @@ class ControllerExtensionModuleCustomTotal extends Controller {
                $data_query[]=array('centr_id' => $aff_centr_id['centr_id']);
          }
         }
+            }
         }
       //  $data['city'] = $this->session->data['shipping_address']['city'];
       if (empty($this->session->data['shipping_address']['city'])) $data['city'] = 'Москва'; else $data['city'] = $this->session->data['shipping_address']['city'];  

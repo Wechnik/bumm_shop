@@ -14,6 +14,7 @@ $_['text_forgotten']               = 'Забыли пароль?';
 
 // Entry
 $_['entry_email']                  = 'E-Mail:';
+$_['entry_telephone']              = 'Телефон:';
 $_['entry_password']               = 'Пароль:';
 
 // Error

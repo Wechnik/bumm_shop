@@ -99,7 +99,7 @@ class ControllerAccountRegister extends Controller {
 			$data['error_warning'] = '';
 		}
 
-		if (isset($this->error['firstname'])) {
+/*		if (isset($this->error['firstname'])) {
 			$data['error_firstname'] = $this->error['firstname'];
 		} else {
 			$data['error_firstname'] = '';
@@ -116,13 +116,13 @@ class ControllerAccountRegister extends Controller {
 		} else {
 			$data['error_email'] = '';
 		}
-
+*/
 		if (isset($this->error['telephone'])) {
 			$data['error_telephone'] = $this->error['telephone'];
 		} else {
 			$data['error_telephone'] = '';
 		}
-
+/*
 		if (isset($this->error['address_1'])) {
 			$data['error_address_1'] = $this->error['address_1'];
 		} else {
@@ -158,7 +158,7 @@ class ControllerAccountRegister extends Controller {
 		} else {
 			$data['error_custom_field'] = array();
 		}
-
+*/
 		if (isset($this->error['password'])) {
 			$data['error_password'] = $this->error['password'];
 		} else {
@@ -251,6 +251,8 @@ class ControllerAccountRegister extends Controller {
 
 		if (isset($this->request->post['city'])) {
 			$data['city'] = $this->request->post['city'];
+		} elseif ($this->session->data['shipping_address']['city']) {
+            $data['city'] = $this->session->data['shipping_address']['city'];
 		} else {
 			$data['city'] = '';
 		}
@@ -354,7 +356,7 @@ class ControllerAccountRegister extends Controller {
 	}
 
 	private function validate() {
-		if ((utf8_strlen(trim($this->request->post['firstname'])) < 1) || (utf8_strlen(trim($this->request->post['firstname'])) > 32)) {
+/*		if ((utf8_strlen(trim($this->request->post['firstname'])) < 1) || (utf8_strlen(trim($this->request->post['firstname'])) > 32)) {
 			$this->error['firstname'] = $this->language->get('error_firstname');
 		}
 
@@ -365,15 +367,15 @@ class ControllerAccountRegister extends Controller {
 		if ((utf8_strlen($this->request->post['email']) > 96) || !preg_match($this->config->get('config_mail_regexp'), $this->request->post['email'])) {
 			$this->error['email'] = $this->language->get('error_email');
 		}
-
-		if ($this->model_account_customer->getTotalCustomersByEmail($this->request->post['email'])) {
+*/
+		if ($this->model_account_customer->getTotalCustomersByTelephone($this->request->post['telephone'])) {
 			$this->error['warning'] = $this->language->get('error_exists');
 		}
 
 		if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
 			$this->error['telephone'] = $this->language->get('error_telephone');
 		}
-
+/*
 		if ((utf8_strlen(trim($this->request->post['address_1'])) < 3) || (utf8_strlen(trim($this->request->post['address_1'])) > 128)) {
 			$this->error['address_1'] = $this->language->get('error_address_1');
 		}
@@ -417,7 +419,7 @@ class ControllerAccountRegister extends Controller {
             	$this->error['custom_field'][$custom_field['custom_field_id']] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
             }
 		}
-
+*/
 		if ((utf8_strlen($this->request->post['password']) < 4) || (utf8_strlen($this->request->post['password']) > 20)) {
 			$this->error['password'] = $this->language->get('error_password');
 		}

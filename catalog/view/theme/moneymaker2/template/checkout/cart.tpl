@@ -27,11 +27,12 @@
       </div>
       <hr class="catalog-hr">
       <br />
-      <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
+      <form action="<?php echo $checkout; ?>" method="post" enctype="multipart/form-data">
         <div class="table-responsive">
           <table class="table">
             <thead>
               <tr>
+                <td></td>
                 <td class="text-center"><?php echo $column_image; ?></td>
                 <td class="text-left"><?php echo $column_name; ?></td>
                 <td class="text-left"><?php echo $column_model; ?></td>
@@ -43,12 +44,12 @@
             <tbody>
               <?php foreach ($products as $key => $shipps) { ?>
                 <tr>
-                    <td colspan=7><?php echo $shippings[$key]; ?></td>
+                    <td colspan=8><?php echo $shippings[$key]; ?></td>
                 </tr>
-                <?php foreach($shipps as $product){ ?>    
-                    
+                <?php foreach($shipps as $product){ ?>
                   <tr>
-                    <td class="text-center"><?php if ($product['thumb']) { ?>
+                    <td class="text-center"><input type="checkbox" <?php if(isset($_SESSION['product_id']) && $_SESSION['product_id'] == $product['cart_id'] ){?>checked="checked" <?php } ?> name="product_id[]" value="<?php echo $product['cart_id']?>"/></td>
+                    <td class="text-center"><?php if ($product['thumb']) { ?>   
                       <a href="<?php echo $product['href']; ?>"><img src="<?php echo $product['thumb']; ?>" alt="<?php echo $product['name']; ?>" title="<?php echo $product['name']; ?>" class="img-thumbnail" /></a>
                       <?php } ?></td>
                     <td class="text-left"><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
@@ -73,17 +74,17 @@
                     <td class="text-left"><div class="input-group btn-block" style="max-width: 200px;">
                         <input type="text" name="quantity[<?php echo $product['cart_id']; ?>]" value="<?php echo $product['quantity']; ?>" size="1" class="form-control" />
                         <span class="input-group-btn">
-                        <button type="submit" data-toggle="tooltip" title="<?php echo $button_update; ?>" class="btn btn-link"><i class="fa fa-refresh"></i></button>
+                        <button type="button" data-toggle="tooltip" title="<?php echo $button_update; ?>" class="btn btn-link product_quantity_update "><i class="fa fa-refresh"></i></button>
                         <button type="button" data-toggle="tooltip" title="<?php echo $button_remove; ?>" class="btn btn-link text-special" onclick="cart.remove('<?php echo $product['cart_id']; ?>');"><i class="fa fa-times-circle"></i></button></span></div></td>
                     <td class="text-right"><?php echo $product['price']; ?></td>
                     <td class="text-right"><?php echo $product['total']; ?></td>
 
-     </form>
+     <!--</form>
            <form action="<?php echo $checkout; ?>" method="post" enctype="multipart/form-data">
      <td class="text-right"><button type="submit" class="btn btn-primary"><?php echo $button_checkout; ?></button></td>
        <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>"/>
             </form>
-                
+          -->      
               </tr>
               <?php } ?>
               <?php } ?>
@@ -102,6 +103,9 @@
             </tbody>
           </table>
         </div>
+        <div class="text-right">
+          <button type="submit"disabled  class="btn btn-primary"><?php echo $button_checkout; ?></button>
+        </div>
       </form>
       <?php if ($modules) { ?>
       <h3 class="text-center"><?php echo $text_next; ?></h3>
@@ -119,7 +123,7 @@
             <?php foreach ($totals as $total) { ?>
             <tr>
               <td class="text-right"><strong><?php echo $total['title']; ?>:</strong></td>
-              <td class="text-right"><?php echo $total['text']; ?></td>
+              <td class="text-right total"><?php echo $total['text']; ?></td>
             </tr>
             <?php } ?>
           </table>
@@ -135,7 +139,70 @@
     <?php echo $column_right; ?></div>
 </div>
 <script type="text/javascript"><!--
+    $('input[name^=product_id]').on('change', function(){
+        var checked = false;
+        $('input[name^=product_id]').each(function(){
+            if($(this).prop('checked')){
+                checked = true;
+            }
+        });
+        if(checked){
+            $(this).parent().parent().parent().parent().parent().parent().find('.btn.btn-primary').removeAttr('disabled');   
+        } else{
+            $(this).parent().parent().parent().parent().parent().parent().find('.btn.btn-primary').attr('disabled', 'disabled');   
+        }
+    });
   $(document).ready(function() {
+    $('.product_quantity_update').click(function(){
+        var qunt = $(this).parent().parent().find('input').val();
+        var name = $(this).parent().parent().find('input').attr('name').replace('quantity[','').replace(']','');
+
+        $.ajax({
+            url: 'index.php?route=checkout/cart/edit',
+            type: 'post',
+            data: 'key=' + name + '&quantity=' + (typeof(qunt) != 'undefined' ? qunt : 1),
+            dataType: 'json',
+            beforeSend: function() {
+                $('#cart > button').button('loading');
+            },
+            complete: function() {
+                $('#cart > button').button('reset');
+            },
+            success: function(json) {
+
+                // Need to set timeout otherwise it wont update the total
+                setTimeout(function () {
+                    var moneymaker2_total_count = json['moneymaker2_total_count'];
+                    var moneymaker2_total_sum = json['moneymaker2_total_sum'];
+                    $('#cart > .dropdown-toggle #cart-total').html(moneymaker2_total_sum);
+                    $('#cart #cart-total').html(moneymaker2_total_sum);
+                    $('#popupCart > .dropdown-toggle #cart-total').html(moneymaker2_total_sum);
+                    $('#popupCart .fa-stack .fa-stack-1x, .navbar-cart-toggle .fa-stack .fa-stack-1x').html(moneymaker2_total_count);
+                    $('#cart > .dropdown-toggle .fa-stack .fa-stack-1x, .navbar-cart-toggle .fa-stack .fa-stack-1x').html(moneymaker2_total_count);
+                }, 100);
+                //if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
+                    location = 'index.php?route=checkout/cart';
+                //} else {
+                    $('#cart > ul').load('index.php?route=common/cart/info ul li');
+                    $( "#popupCart > ul" ).load('index.php?route=common/cart/popup_info ul li');
+                    // if popup cart
+                    if ($('body').hasClass('modal-open')) {
+                        $('#popupModal').find('.modal-body ul').load('index.php?route=common/cart/info ul li', function() {
+                            $('#popupModal .modal-title').text(json['total']);
+                            $('#popupModal').modal();
+                        });
+                    }
+                //}
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+        });
+    });
+    setTimeout(function(){
+    $('input[type="checkbox"]').each(function(){
+        this.checked = false;
+    });}, 10);
     <?php if ($attention) { ?>
       $('#popupModal .modal-header .close').removeClass('hidden');
       $('#popupModal .modal-title').text('<?php echo $heading_title; ?>');

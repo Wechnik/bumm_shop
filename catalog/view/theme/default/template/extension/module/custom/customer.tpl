@@ -1,5 +1,5 @@
 <div class="panel panel-default">
-  <div class="panel-heading"><?= $heading_customer ?></div>
+  <div class="panel-heading"><span class="col-lg-7"><?= $heading_customer ?></span></div>
   <div class="panel-body">
     <div class="form-group" style="display: <?php echo (count($customer_groups) > 1 ? 'block' : 'none'); ?>;">
       <label class="control-label"><?php echo $entry_customer_group; ?></label>
@@ -21,9 +21,28 @@
     </div>
 
     <?php foreach ($setting['fields'] as $field) { ?>
-
+    <?php if ($field['name'] === 'firstname') { ?>
+        <div class="form-group ">
+          <label class="control-label" for="customer-input-firstname"><?php echo $entry_firstname; ?>: </label>
+          <span class="customer-input-firstname"><?php echo $firstname; ?> </span>
+        </div>
+      <?php } ?>
+      <?php if ($field['name'] === 'email') { ?>
+        <div class="form-group">
+          <label class="control-label" for="customer-input-email"><?php echo $entry_email; ?>: </label>
+          <span class="customer-input-email"><?php echo $email; ?></span>
+        </div>
+      <?php } ?>
+      <?php if ($field['name'] === 'telephone') { ?>
+        <div class="form-group">
+          <label class="control-label" for="customer-input-telephone"><?php echo $entry_telephone; ?> :</label>
+          <span class="customer-input-telephone"><?php echo $telephone; ?></span>
+        </div>
+      <?php } ?>
+    <?php } ?>
+    <?php foreach ($setting['fields'] as $field) { ?>
       <?php if ($field['name'] === 'firstname') { ?>
-        <div class="form-group" id="customer-field-firstname">
+        <div class="form-group <?=(($firstname!='')?'disnone':'')?>" id="customer-field-firstname" >
           <label class="control-label" for="customer-input-firstname"><?php echo $entry_firstname; ?></label>
           <input type="text" name="customer_firstname" value="<?php echo $firstname; ?>" placeholder="<?php echo $entry_firstname; ?>" id="customer-input-firstname" class="form-control" data-validation="<?php echo $field['validation']; ?>" />
         </div>
@@ -31,7 +50,7 @@
       <?php } ?>
 
       <?php if ($field['name'] === 'lastname') { ?>
-        <div class="form-group" id="customer-field-lastname">
+        <div class="form-group <?=(($lastname!='')?'disnone':'')?>" id="customer-field-lastname">
           <label class="control-label" for="customer-input-lastname"><?php echo $entry_lastname; ?></label>
           <input type="text" name="customer_lastname" value="<?php echo $lastname; ?>" placeholder="<?php echo $entry_lastname; ?>" id="customer-input-lastname" class="form-control" data-validation="<?php echo $field['validation']; ?>" />
         </div>
@@ -39,7 +58,7 @@
       <?php } ?>
 
       <?php if ($field['name'] === 'email') { ?>
-        <div class="form-group" id="customer-field-email">
+        <div class="form-group <?=(($email!='')?'disnone':'')?>" id="customer-field-email">
           <label class="control-label" for="customer-input-email"><?php echo $entry_email; ?></label>
           <input type="text" name="customer_email" value="<?php echo $email; ?>" placeholder="<?php echo $entry_email; ?>" id="customer-input-email" class="form-control" data-validation="<?php echo $field['validation']; ?>" />
         </div>
@@ -47,7 +66,7 @@
       <?php } ?>
 
       <?php if ($field['name'] === 'telephone') { ?>
-        <div class="form-group" id="customer-field-telephone">
+        <div class="form-group <?=(($telephone!='')?'disnone':'')?>" id="customer-field-telephone">
           <label class="control-label" for="customer-input-telephone"><?php echo $entry_telephone; ?></label>
           <input type="text" name="customer_telephone" value="<?php echo $telephone; ?>" placeholder="<?php echo $entry_telephone; ?>" id="customer-input-telephone" class="form-control" data-validation="<?php echo $field['validation']; ?>" />
         </div>
@@ -62,7 +81,7 @@
         <?php continue; ?>
       <?php } ?>
 
-      <?php if ($field['name'] === 'password') { ?>
+      <?php if (!$logged && $field['name'] === 'password') { ?>
         <div class="form-group" id="customer-field-password">
           <label class="control-label" for="customer-input-password"><?php echo $entry_password; ?></label>
           <input type="password" name="customer_password" value="<?php echo $password; ?>" placeholder="<?php echo $entry_password; ?>" id="customer-input-password" class="form-control" data-validation="<?php echo $field['validation']; ?>" />
@@ -70,7 +89,7 @@
         <?php continue; ?>
       <?php } ?>
 
-      <?php if ($field['name'] === 'confirm') { ?>
+      <?php if (!$logged && $field['name'] === 'confirm') { ?>
         <div class="form-group" id="customer-field-confirm">
           <label class="control-label" for="customer-input-confirm"><?php echo $entry_confirm; ?></label>
           <input type="password" name="customer_confirm" value="<?php echo $confirm; ?>" placeholder="<?php echo $entry_confirm; ?>" id="customer-input-confirm" class="form-control" data-validation="<?php echo $field['validation']; ?>" />
@@ -180,6 +199,7 @@
       <?php } ?>
 
     <?php } ?>
+    <div> <a id="edit_customer" href="javascript:;">Изменить</a></div>
 
   </div>
 </div>
@@ -190,8 +210,24 @@ $('#custom-customer [name^=customer]').on('input', function() {
   $(this).parent().removeClass('has-error');
 });
 //--></script>
-
+<style>
+    .panel-default > .panel-heading{height:40px;}
+    .disnone{display:none!important;}
+</style>
 <script><!--
+$('#edit_customer').on('click',function(){
+    if($('#customer-field-firstname').hasClass('disnone')){
+        $('#customer-field-firstname').removeClass('disnone');
+        $('#customer-field-telephone').removeClass('disnone');
+        $('#customer-field-email').removeClass('disnone');
+        $('#edit_customer').text('Готово');
+    } else {
+        $('#customer-field-firstname').addClass('disnone');
+        $('#customer-field-telephone').addClass('disnone');
+        $('#customer-field-email').addClass('disnone');
+        $('#edit_customer').text('Изменить');
+    }
+});
 $('#custom-customer input[name=\'customer_group_id\']').on('change', function() {
 
   // Customer
@@ -201,7 +237,18 @@ $('#custom-customer input[name=\'customer_group_id\']').on('change', function() 
   custom_block.payment(this.value);
 
 });
-
+$('input[name="customer_firstname"]').on('change', function(){
+    custom_block.customerupdate('firstname',this.value);
+    $('span.customer-input-firstname').text(this.value);
+});
+$('input[name="customer_email"]').on('change', function(){
+    custom_block.customerupdate('email',this.value);
+    $('span.customer-input-email').text(this.value);
+});
+$('input[name="customer_telephone"]').on('change', function(){
+    custom_block.customerupdate('telephone',this.value);
+    $('span.customer-input-telephone').text(this.value);
+});
 $('#custom-customer input[name=\'customer_group_id\']:checked').trigger('change');
 //--></script>
 

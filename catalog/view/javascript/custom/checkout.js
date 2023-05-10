@@ -47,6 +47,30 @@ const custom_block = {
       }
     });
   },
+  'customerupdate': function(name,value){
+    $.ajax({
+      url: 'index.php?route=extension/module/custom/customer/updatecustomer&' + name + '=' + value,
+      dataType: 'json',
+      success: function(json) {
+        /*$('[id^=customer-field]').hide();
+        $('[id^=customer-field]').removeClass('required');
+
+        for (i = 0; i < json.length; i++) {
+          field = json[i];
+
+          $('#customer-field-' + field.name).show();
+
+          if (field['required']) {
+            $('#customer-field-' + field.name).addClass('required');
+          }
+        }*/
+        console.log(json);
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+  },
 
   'shipping': function(value){
     $.ajax({

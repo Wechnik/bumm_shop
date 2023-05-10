@@ -962,7 +962,7 @@ class ControllerCatalogProduct extends Controller {
         } else {
             $data['current_product_stickers'] = [];
         }
-/*Product and cart modification*/
+
         $method_data = array();
 
 		$this->load->model('extension/extension');
@@ -995,7 +995,6 @@ class ControllerCatalogProduct extends Controller {
         } else {
             $data['current_product_shippings'] = [];
         }
-/*Product and cart modification*/
         $data['smart_filters'] = array();
 
         if (isset($this->request->post['product_attribute'])) {
